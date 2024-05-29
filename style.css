@@ -86,28 +86,33 @@ a:hover {
 
 .login {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 60vh;
+}
+
+.loginimg {
+    height: 100vh;
+    width: 65%;
+    background-image: url(https://i.pinimg.com/564x/93/c1/41/93c141eda5926c9d5f621766164fc04e.jpg);
+    background-size: cover;
 }
 
 form {
-    text-align: center;
-    border-radius: 10px;
-    width: 30%;
-    background-color: darkgrey;
+    width: 35%;
     padding: 10px;
+    margin: 60px;
 }
 
 form input {
-    font-size: 20px;
-    margin: 10px;
+    font-size: 16px;
+    margin-bottom: 10px;
     padding: 5px;
+    line-height: 25px;
     border-radius: 5px;
-    line-height: 30px;
     border: 0;
 }
 
 #submit {
-    width: 30%;
+    margin-top: 10px;
+    width: 15%;
+    line-height: 15px;
+    width: 20%;
 }

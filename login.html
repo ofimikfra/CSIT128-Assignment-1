@@ -1,32 +1,39 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Cooking Papa | Login</title>
+        <title>Login | Cooking Papa</title>
         <link rel="stylesheet" href="style.css">
     </head>
     <script src="scripts.js"></script>
     <body>
         <!-- login and registration -->
 
-        <div class="nav">
-
-            <div class="header">cooking papa</div>
-            
-            <div class="links">
-                <a href="index.html">Return to Homepage</a>
-            </div>
-
-        </div>
-
         <div class="login">
-            <form>
-                <h1>Login to Cooking Papa</h1>
-                <input type="text" placeholder="Username" size="30%"> <br>
-                <input type="password" placeholder="Password" size="30%"> <br>
+            <div class="loginimg"></div>
+            <form name="login">
+                <h1 style="line-height: 0; margin-top: 0;">Welcome to</h1>
+                <h1 style="font-size: 60px; line-height: 0;">Cooking Papa</h1>
+
+                <h2 style="margin-top: 50px;">Login to your account</h2>
+
+                <input type="text" placeholder="Username" size="45%"> <br>
+                <input type="password" placeholder="Password" size="45%"> <br>
                 <input type="submit" value="Login" id="submit"> <br>
 
-                <p>New to Cooking Papa? <a href="" style="line-height: 0;">Register here</a>.</p>
-                <a href="index.html" style="font-size: 15px;">Return to Homepage</a>
+                <h2>Create a new account</h2>
+
+                <input type="text" name="first name" placeholder="First name" size="45%"> <br>
+                <input type="text" name="last name" placeholder="Last name" size="45%"> <br>
+                <input type="text" name="username" placeholder="Username" size="45%"> <br>
+                <input type="text" name="email" placeholder="Email Address" size="45%"> <br>
+                <input type="password" id="pass" name="password" placeholder="Password" size="21%" style="margin-bottom: 0; margin-right: 4px;"> 
+                <input type="password" id="conf" name="confirm" placeholder="Confirm password" size="21%" style="margin-bottom: 0;"> <br>
+                <p id="info" style="font-size: 12px; line-height: 0; color: lightgrey;">ⓘ Password must contain a captial letter, a digit, and a special character.</p>
+                <p id="match" style="font-size: 12px; line-height: 0; color: lightgrey;"></p>
+
+                <input type="submit" value="Sign Up" id="submit"> <br>
+
+                <a href="index.html" id="info" style="font-size: 15px; text-decoration: underline;">Return to Homepage</a>
             </form>
         </div>
 
