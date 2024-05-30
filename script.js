@@ -1,54 +1,98 @@
-function validateForm() {
-    // check email format
-    var email = document.forms["login"]["email"]
-    if (/\w\S+@\S+(\.\S+){1,}/.test(email) == false) {
-        alert("Please enter a valid email address.")
-        document.getElementsByName(email).style.border = "2px solid red";
+document.addEventListener("DOMContentLoaded", (event) => {
+    const password = document.getElementById("password");
+    const confirm = document.getElementById("confirm");
+    const match = document.getElementById("match");
+
+    function checkPasswordMatch() {
+        if (password.value == "" || confirm.value == "") {
+            match.textContent = "";
+            confirm.style.border = "none";
+        }
+        else if (password.value == confirm.value) {
+            confirm.style.border = "none";
+            match.textContent = "ⓘ Passwords match.";
+            match.style.color = "lime";
+        } else {
+            confirm.style.border = "2px solid red";
+            match.textContent = "ⓘ Passwords do not match.";
+            match.style.color = "red";
+        }
+    }
+
+    password.addEventListener("input", checkPasswordMatch);
+    confirm.addEventListener("input", checkPasswordMatch);
+});
+
+function validateRegister() {
+    // form elements
+    let form = document.forms["register"];
+    let signupFields = ["first name", "last name", "username", "email", "password", "confirm"];
+    let psw = form["password"].value;
+    let conf = form["confirm"].value;
+    let info = document.getElementById("regInfo");
+    let matchInfo = document.getElementById("match");
+
+    //check if empty
+    if (checkEmpty(form, signupFields)) {
+        document.getElementById("err").textContent = "ⓘ Please fill out the empty fields."
+        return false;
     } else {
-        document.getElementsByName(email).style.border = 0;
+        document.getElementById("err").textContent = ";"
     }
 
     // check password reqs
-    var pass = document.forms["login"]["password"].value;
     let upper = false;
     let num = false;
     let special = false;
 
-    for (let i = 0; i < pass.length; i++) {
-        if (pass[i] == pass[i].toUpperCase()) { upper = true; }
-        else if (/^\d$/.test(pass[i])) { num = true; }
-        else if (/[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(pass[i]) == true) { special = true; }
+    for (let i = 0; i < psw.length; i++) {
+        if (psw[i] === psw[i].toUpperCase() && /[A-Z]/.test(psw[i])) { upper = true; }
+        else if (/^\d$/.test(psw[i])) { num = true; }
+        else if (/[!@#$]/.test(psw[i]) == true) { special = true; }
     }
 
     if ((upper && num && special) == false) { 
-        document.getElementsByName(password).style.border = "2px solid red";
-        document.getElementById(info).textContent = "ⓘ Password must contain a captial letter, a digit, and a special character.";
-        document.getElementById(info).style.color = "red";
+        form["password"].style.border = "2px solid red";
+        info.textContent = "ⓘ Password must contain a captial letter, a digit, and a special character.";
+        info.style.color = "red";
         return false;
     } else {
-        document.getElementById(info).style.color = "lightgrey";
-        document.getElementsByName(password).style.border = 0;
+        info.style.color = "lightgrey";
+        form["password"].style.border = "none";
     }
 
     // check if passwords match
-    var confirm = document.forms["login"]["confirm"].value;
-    if (confirm.trim() != pass.trim()) {
-        document.getElementById(conf).style.border = "2px solid red";
-        document.getElementById(match).textContent = "ⓘ Password does not match.";
-        document.getElementById(info).style.color = "red";
+    if (conf.trim() !== psw.trim()) {return false;} 
+
+    return true;
+}
+
+function validateLogin() {
+    // form elements
+    let form = document.forms["login"];
+    let loginFields = ["login username", "login password"]
+    let info = document.getElementById("loginInfo")
+
+    // check if empty
+    if (checkEmpty(form, loginFields)) {
+        document.getElementById("loginInfo").textContent = "ⓘ Please fill out the empty fields."
         return false;
-    } else {
-        document.getElementById(conf).style.border = 0;
-        document.getElementById(match).textContent = "ⓘ Passwords match.";
-        document.getElementById(info).style.color = "lime";
     }
 
-    var form = document.getElementsByName("login");
-    for (let i = 0; i < form.elements.length; i++) { 
-        if (!form.elements[i].value) { 
-            return false;
-        } 
-    } 
-    
-    return true;
+    // validate data with mysql table
+
+}
+
+function checkEmpty(form, fields) {
+    let isEmpty = false;
+
+    for (let i = 0; i < fields.length; i++) {
+        if (form[fields[i]].value.trim() === "") {
+            form[fields[i]].style.border = "2px solid red";
+            isEmpty = true;
+        } else {
+            form[fields[i]].style.border = "none";
+        }
+    }
+    if (isEmpty) {return true;}
 }

@@ -21,7 +21,7 @@ body {
 }
 
 .banner {
-    background-image: url(https://i.pinimg.com/originals/ec/17/ee/ec17ee8ace7615022ba4ba96ab0be153.jpg);
+    background-image: linear-gradient(rgba(107, 63, 71, 0.5), rgba(107, 63, 71, 0.5)), url(https://i.pinimg.com/originals/ec/17/ee/ec17ee8ace7615022ba4ba96ab0be153.jpg);
     background-size: cover;
     width: 100%;
     height: 40vh;
@@ -64,7 +64,7 @@ a {
 }
 
 a:hover {
-    color: red;
+    color: pink;
 }
 
 .nav {
@@ -88,6 +88,10 @@ a:hover {
     display: flex;
 }
 
+.forms {
+    display: inline-block;
+}
+
 .loginimg {
     height: 100vh;
     width: 65%;
@@ -95,10 +99,14 @@ a:hover {
     background-size: cover;
 }
 
-form {
-    width: 35%;
-    padding: 10px;
-    margin: 60px;
+#log {
+    margin-top: 60px;
+    margin-left: 40px;
+}
+
+#reg {
+    margin-top: 15px;
+    margin-left: 40px;
 }
 
 form input {
@@ -110,9 +118,40 @@ form input {
     border: 0;
 }
 
+form a {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 20px;
+    font-size: 15px; 
+    text-decoration: underline; 
+}
+
+form h2 {
+    margin-bottom: 10px;
+}
+
+.subscript {
+    font-size: 12px; 
+    line-height: 0; 
+    color: lightgrey;
+}
+
 #submit {
-    margin-top: 10px;
-    width: 15%;
-    line-height: 15px;
+    margin-top: 0;
+    font-weight: bold;
+    font-size: 15px;
+    padding: 5px;
     width: 20%;
+    border-radius: 20px;
+    border: 2px solid white;
+    color: white;
+    background-color: transparent;
+    transition: background-color 0.3s ease, color 0.3s ease, border 0.3s ease;
+}
+
+#submit:hover {
+    color: black;
+    background-color: white;
+    border: 2px solid white;
 }

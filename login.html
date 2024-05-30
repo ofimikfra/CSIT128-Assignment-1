@@ -4,38 +4,39 @@
         <title>Login | Cooking Papa</title>
         <link rel="stylesheet" href="style.css">
     </head>
-    <script src="scripts.js"></script>
+    <script src="script.js"></script>
     <body>
         <!-- login and registration -->
 
         <div class="login">
             <div class="loginimg"></div>
-            <form name="login">
-                <h1 style="line-height: 0; margin-top: 0;">Welcome to</h1>
-                <h1 style="font-size: 60px; line-height: 0;">Cooking Papa</h1>
+            <div class="forms">
+                <form name="login" id="log" onsubmit="return validateLogin()">
+                    <h1 style="line-height: 0;">Welcome to</h1>
+                    <h1 style="font-size: 60px; line-height: 0;">Cooking Papa</h1>
+                    <h2 style="margin-top: 70px;">Login to your account</h2>
+                    <input type="text" name="login username" placeholder="Username" size="45%"> <br>
+                    <input type="password" name="login password" placeholder="Password" size="45%" style="margin-bottom: 3px;"> <br>
+                    <p class="subscript" id="loginInfo" style="margin-bottom: 15px; color: red;"></p>
+                    <input type="submit" value="Login" id="submit"> <br>
+                
+                </form>
+                <form name="register" id="reg" onsubmit="return validateRegister()">
+                    <h2>Create a new account</h2>
+                    <input type="text" name="first name" placeholder="First name" size="45%"> <br>
+                    <input type="text" name="last name" placeholder="Last name" size="45%"> <br>
+                    <input type="text" name="username" placeholder="Username" size="45%"> <br>
+                    <input type="email" name="email" placeholder="Email Address" size="45%"> <br>
+                    <input type="password" name="password" id="password" placeholder="Password" size="21%" style="margin-bottom: 0; margin-right: 4px;"> 
+                    <input type="password" name="confirm" id="confirm" placeholder="Confirm password" size="21%" style="margin-bottom: 3px;"> <br>
+                    <p class="subscript" id="regInfo">ⓘ Password must contain a captial letter, a digit, and a special character.</p>
+                    <p class="subscript" id="match"></p>
+                    <p class="subscript" id="err" style="margin-bottom: 15px; color: red;"></p>
+                    <input type="submit" value="Sign Up" id="submit"> <br>
+                    <a href="index.html">Return to Homepage</a>
+                </form>
+            </div>
 
-                <h2 style="margin-top: 50px;">Login to your account</h2>
-
-                <input type="text" placeholder="Username" size="45%"> <br>
-                <input type="password" placeholder="Password" size="45%"> <br>
-                <input type="submit" value="Login" id="submit"> <br>
-
-                <h2>Create a new account</h2>
-
-                <input type="text" name="first name" placeholder="First name" size="45%"> <br>
-                <input type="text" name="last name" placeholder="Last name" size="45%"> <br>
-                <input type="text" name="username" placeholder="Username" size="45%"> <br>
-                <input type="text" name="email" placeholder="Email Address" size="45%"> <br>
-                <input type="password" id="pass" name="password" placeholder="Password" size="21%" style="margin-bottom: 0; margin-right: 4px;"> 
-                <input type="password" id="conf" name="confirm" placeholder="Confirm password" size="21%" style="margin-bottom: 0;"> <br>
-                <p id="info" style="font-size: 12px; line-height: 0; color: lightgrey;">ⓘ Password must contain a captial letter, a digit, and a special character.</p>
-                <p id="match" style="font-size: 12px; line-height: 0; color: lightgrey;"></p>
-
-                <input type="submit" value="Sign Up" id="submit"> <br>
-
-                <a href="index.html" id="info" style="font-size: 15px; text-decoration: underline;">Return to Homepage</a>
-            </form>
         </div>
-
     </body>
 </html>
