@@ -1,24 +1,106 @@
 var http = require("http");
 var fs = require("fs");
 var mysql = require("mysql");
+var path = require("path");
+const formidable = require('formidable');
 
+
+// connect to mysql database
+var con = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "admin",
+    database: "cookingPapa"
+});
+
+con.connect(function(err) {
+    if (err) throw err;
+    console.log("Connected to cookingPapa database.");
+});
+
+
+// serve html page
 http.createServer(function (req, res) {
 
-    fs.readFile("index.html", function(err, data) {
-        res.writeHead(200, {"Content-type": "text/html"});
-        res.write(data);
-    })
+    var filePath = "." + req.url;
+    if (filePath == "./") {
+        filePath = "./index.html";
+    }
 
-    var con = mysql.createConnection ({
-        host: "localhost",
-        user: "root",
-        password: "admin",
-        database: "cookingPapa"
-    });
+    var extname = path.extname(filePath);
+    var contentType = "text/html";
+    if (extname == ".css") {
+        contentType = "text/css";
+    }
 
-    con.connect(function(err) {
-        if (err) throw err;
-        console.log("Connected to cookingPapa DB.");
-    });
-
+    if (req.url === "/login") { // if user logs in
+        loginUser(req, res);
+    } else if (req.url === "/register") { // if user registers
+        registerUser(req, res);
+    } else {
+        fs.readFile(filePath, function(err, data) { // read index.html landing page
+            if (err) {
+                res.writeHead(404, { "Content-Type": "text/plain" });
+                res.end("404 Not Found");
+            } else {
+                res.writeHead(200, { "Content-Type": contentType });
+                res.end(data, "utf-8");
+            }
+        });
+    }
 }).listen(8080);
+
+
+// check login details
+function loginUser(req, res) { 
+    var form = new formidable.IncomingForm();
+    form.parse(req, function(err, fields) {
+
+        if (err) throw err;
+        var {useremail, password} = fields;
+
+        // check if user is in users table
+        con.query("SELECT * FROM users WHERE (email = ? OR username = ?) AND password = ?", [useremail, useremail, password], function(err, result) {
+            if (err) throw err;
+
+            if (result.length > 0) {
+                res.writeHead(302, { 'Location': '/recipes.html' }); // redirect to recipes page
+                console.log("Logged in as " + useremail)
+                res.end();
+            } else {
+                // user is not in users table
+                res.writeHead(401, {'Content-Type': 'application/json'});
+                res.end(JSON.stringify({message: "Email/username or password is wrong."})); 
+            }
+        });
+    });
+}
+
+function registerUser(req, res) {
+    var form = new formidable.IncomingForm();
+    form.parse(req, function(err, fields) {
+        if (err) throw err;
+        
+        var {fname, lname, username, email, password} = fields;
+
+        // check if email or username already in use
+        con.query("SELECT * FROM users WHERE email = ? OR username = ?", [email, username], function(err, result) {
+            if (err) throw err;
+
+            if (result.length > 0) {
+                // user already exists
+                res.writeHead(401, {'Content-Type': 'application/json'});
+                res.end(JSON.stringify({message: "User already exists."})); 
+                
+            } else {
+
+                con.query("INSERT INTO users (fname, lname, username, email, password) VALUES (?, ?, ?, ?, ?)", [fname, lname, username, email, password], function(err, result) {
+                    if (err) throw err;
+                    res.writeHead(302, { 'Location': '/recipes.html' }); // redirect to recipes page
+                    console.log("User " + username + " registered.")
+                    res.end();
+                });
+            }
+        });
+    });
+}

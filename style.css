@@ -119,11 +119,7 @@ form input {
 }
 
 form a {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    margin: 20px;
-    font-size: 15px; 
+    font-size: 12px; 
     text-decoration: underline; 
 }
 

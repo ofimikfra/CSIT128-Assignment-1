@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 function validateRegister() {
     // form elements
     let form = document.forms["register"];
-    let signupFields = ["first name", "last name", "username", "email", "password", "confirm"];
+    let signupFields = ["fname", "lname", "username", "email", "password", "confirm"];
     let psw = form["password"].value;
     let conf = form["confirm"].value;
     let info = document.getElementById("regInfo");
@@ -64,24 +64,74 @@ function validateRegister() {
     // check if passwords match
     if (conf.trim() !== psw.trim()) {return false;} 
 
-    return true;
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/register", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            document.getElementById("err").textContent = "";
+            window.location.href = "/recipes.html"; // redirect to recipes page
+        } else if (xhr.status === 401) {
+            document.getElementById("err").textContent = "ⓘ User already exists, use another email or login."; // login details wrong
+        } else {
+            console.error("Error:", xhr.status);
+        }
+    };
+
+    // send formdata to server.js
+    let formData = JSON.stringify({
+        fname: form.elements["fname"].value,
+        lname: form.elements["lname"].value,
+        username: form.elements["username"].value,
+        email: form.elements["email"].value,
+        password: form.elements["password"].value,
+    });
+
+    xhr.send(formData);
+
+    return false; 
 }
 
 function validateLogin() {
     // form elements
     let form = document.forms["login"];
-    let loginFields = ["login username", "login password"]
-    let info = document.getElementById("loginInfo")
+    let loginFields = ["useremail", "logpassword"];
+    let info = document.getElementById("loginInfo");
 
     // check if empty
     if (checkEmpty(form, loginFields)) {
-        document.getElementById("loginInfo").textContent = "ⓘ Please fill out the empty fields."
+        document.getElementById("loginInfo").textContent = "ⓘ Please fill out the empty fields.";
         return false;
     }
 
-    // validate data with mysql table
+    // Make an AJAX request to server for login
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/login", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
 
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            document.getElementById("loginInfo").textContent = ""
+            window.location.href = "/recipes.html"; // redirect to recipes page
+        } else if (xhr.status === 401) {
+            document.getElementById("loginInfo").textContent = "ⓘ Username, email, or password is wrong."; // login details wrong
+        } else {
+            console.error("Error:", xhr.status);
+        }
+    };
+
+    // send formdata to server.js
+    let formData = JSON.stringify({
+        useremail: form.elements["useremail"].value,
+        password: form.elements["logpassword"].value
+    });
+
+    xhr.send(formData);
+
+    return false; 
 }
+
 
 function checkEmpty(form, fields) {
     let isEmpty = false;
