@@ -2,8 +2,13 @@ var http = require("http");
 var fs = require("fs");
 var mysql = require("mysql");
 var path = require("path");
-const formidable = require('formidable');
+var formidable = require('formidable');
+var cookie = require("cookie");
 
+const cookieOptions = {
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days validity login
+    httpOnly: true, 
+};
 
 // connect to mysql database
 var con = mysql.createConnection({
@@ -37,6 +42,8 @@ http.createServer(function (req, res) {
         loginUser(req, res);
     } else if (req.url === "/register") { // if user registers
         registerUser(req, res);
+    } else if(req.url === "/recipes.html") { // if user is already logged in
+        checkLoggedIn(req, res);
     } else {
         fs.readFile(filePath, function(err, data) { // read index.html landing page
             if (err) {
@@ -64,6 +71,7 @@ function loginUser(req, res) {
             if (err) throw err;
 
             if (result.length > 0) {
+                res.setHeader('Set-Cookie', cookie.serialize('authenticated', 'true', cookieOptions));
                 res.writeHead(302, { 'Location': '/recipes.html' }); // redirect to recipes page
                 console.log("Logged in as " + useremail)
                 res.end();
@@ -103,4 +111,22 @@ function registerUser(req, res) {
             }
         });
     });
+}
+
+function isLoggedIn(req) {
+    const cookies = cookie.parse(req.headers.cookie || '');
+    return cookies.authenticated === 'true';
+}
+
+function checkLoggedIn(req, res) {
+    if (isLoggedIn(req)) {
+        fs.readFile("./recipes.html", function(err, data) {
+            if (err) throw err; 
+            res.writeHead(200, { "Content-Type": "text/html" });
+            res.end(data);
+        });
+    } else {
+        res.writeHead(302, { 'Location': '/login.html' }); // redirect to login if not logged in already
+        res.end();
+    }
 }
