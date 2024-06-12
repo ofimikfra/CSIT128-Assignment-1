@@ -77,15 +77,15 @@ exports.registerUser = function(req, res) {
 // Function to serve static files
 
 // Navigation functions
-exports.navLogin = function(req, res) {
+exports.navHome = function(req, res) {
     if (req.url.endsWith('.css')) {
-        fs.readFile("homelogin.css", function (err, data) {
+        fs.readFile("style.css", function (err, data) {
             if (err) throw err;
             res.writeHead(200, { 'Content-Type': "text/css" });
             res.end(data, "utf-8");
         });
     } else {
-        fs.readFile("login.html", function (err, data) {
+        fs.readFile("index.html", function (err, data) {
             if (err) throw err;
             res.writeHead(200, { 'Content-Type': "text/html" });
             res.end(data, "utf-8");
@@ -93,15 +93,15 @@ exports.navLogin = function(req, res) {
     }
 };
 
-exports.navHome = function(req, res) {
+exports.navLogin = function(req, res) {
     if (req.url.endsWith('.css')) {
-        fs.readFile("homelogin.css", function (err, data) {
+        fs.readFile("style.css", function (err, data) {
             if (err) throw err;
             res.writeHead(200, { 'Content-Type': "text/css" });
             res.end(data, "utf-8");
         });
     } else {
-        fs.readFile("index.html", function (err, data) {
+        fs.readFile("login.html", function (err, data) {
             if (err) throw err;
             res.writeHead(200, { 'Content-Type': "text/html" });
             res.end(data, "utf-8");

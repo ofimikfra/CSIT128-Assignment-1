@@ -13,7 +13,7 @@
             <div class="loginimg"></div>
             <div class="forms">
 
-                <form name="login" action="login" id="log" method="post" onsubmit="return validateLogin()">
+                <form name="login" action="/authlogin" id="log" method="post" onsubmit="return validateLogin()">
                     <h1 style="line-height: 0;">Welcome to</h1>
                     <h1 style="font-size: 60px; line-height: 0;">Cooking Papa</h1>
                     <h2 style="margin-top: 70px;">Login to your account</h2>
@@ -23,7 +23,7 @@
                     <input type="submit" value="Login" id="submit"> <br>
                 </form>
 
-                <form name="register" action="register" id="reg" method="post" onsubmit="return validateRegister()">
+                <form name="register" action="/authregister" id="reg" method="post" onsubmit="return validateRegister()">
                     <h2>Create a new account</h2>
                     <input type="text" name="fname" placeholder="First name" size="45%"> <br>
                     <input type="text" name="lname" placeholder="Last name" size="45%"> <br>

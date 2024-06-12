@@ -1,10 +1,9 @@
-const session = require('express-session');
+var session = require('express-session');
 
 exports.setSession = function (req, username) {
     req.session.userName = username;
     console.log("Session Created.");
 };
-
 
 exports.getSession = function(req) {
     return req.session;
