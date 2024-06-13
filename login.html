@@ -5,7 +5,7 @@
         <title>Login | Cooking Papa</title>
         <link rel="stylesheet" href="style.css">
     </head>
-    <script src="script.js"></script>
+    <script src="loginscript.js"></script>
     <body>
         <!-- login and registration -->
 
@@ -17,10 +17,10 @@
                     <h1 style="line-height: 0;">Welcome to</h1>
                     <h1 style="font-size: 60px; line-height: 0;">Cooking Papa</h1>
                     <h2 style="margin-top: 70px;">Login to your account</h2>
-                    <input type="text" name="useremail" placeholder="Username or Email Address" size="45%"> <br>
+                    <input type="text" name="loguser" placeholder="Username or Email Address" size="45%"> <br>
                     <input type="password" name="logpassword" placeholder="Password" size="45%" style="margin-bottom: 3px;"> <br>
                     <p class="subscript" id="loginInfo" style="margin-bottom: 15px; color: red;"></p>
-                    <input type="submit" value="Login" id="submit"> <br>
+                    <input type="submit" value="Login" class="button"> <br>
                 </form>
 
                 <form name="register" action="/authregister" id="reg" method="post" onsubmit="return validateRegister()">
@@ -34,7 +34,7 @@
                     <p class="subscript" id="regInfo">ⓘ Password must contain a captial letter, a digit, and a special character.</p>
                     <p class="subscript" id="match"></p>
                     <p class="subscript" id="err" style="margin-bottom: 15px; color: red;"></p>
-                    <input type="submit" value="Sign Up" id="submit"> <br>
+                    <input type="submit" value="Sign Up" class="button"> <br>
                     <a href="index.html">Return to Homepage</a>
                 </form>
 

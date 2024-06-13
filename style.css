@@ -133,7 +133,7 @@ form h2 {
     color: lightgrey;
 }
 
-#submit {
+.button {
     margin-top: 0;
     font-weight: bold;
     font-size: 15px;
@@ -146,8 +146,9 @@ form h2 {
     transition: background-color 0.3s ease, color 0.3s ease, border 0.3s ease;
 }
 
-#submit:hover {
+.button:hover {
     color: black;
     background-color: white;
     border: 2px solid white;
 }
+
