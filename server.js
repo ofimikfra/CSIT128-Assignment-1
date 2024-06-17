@@ -1,31 +1,34 @@
-const express = require('express'); 
-const multer = require('multer'); 
-const path = require('path'); 
-
-const app = express(); 
-const port = 3000; 
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/'); 
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
-    }
+const express = require('express);
+const sql = require('sql');
+const path = require('path');
+const bodyParser = require('body-parser');
+const app = express();
+const db = new sql.Database('./recipes.db');
+app.use(bodyParser.json());
+app.use(express.static(path.join(_dirname,'public')));
+app.get('/search',(req, res) => {
+  const query = req.query.q;
+  const sql = `SELECT * FROM recipes WHERE name LIKE ? OR ingredients LIKE ?`;
+  db.all(sql, [`%${query}%`, `%${query}%`], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.json({ recipes: rows });
+    });
 });
 
-const upload = multer({ storage: storage });
-
-app.use(express.static('public'));
-
-app.post('/upload', upload.single('recipeFile'), (req, res) => {
-    if (!req.file) {
-        return res.json({ success: false, message: 'No file uploaded.' }); 
-    }
-
-    res.json({ success: true, message: 'File uploaded successfully.' });
+app.get('/recipe/:id', (req, res) => {
+    const id = req.params.id;
+    const sql = `SELECT * FROM recipes WHERE id = ?`;
+    db.get(sql, [id], (err, row) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.json({ recipe: row });
+    });
 });
 
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
