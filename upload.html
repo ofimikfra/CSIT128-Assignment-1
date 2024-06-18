@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Upload</title>
+</head>
+<body>
+    <h1>Upload Your Recipe</h1>
+    <form id="recipeForm" action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="text" name="recipeName" placeholder="Recipe Name" required><br><br>
+        <textarea name="ingredients" placeholder="Ingredients" required></textarea><br><br>
+        <textarea name="instructions" placeholder="Instructions" required></textarea><br><br>
+        <input type="file" name="recipeFile" required><br><br>
+        <button type="submit">Upload Recipe</button>
+    </form>
+    <script src="uploadscript.js"></script>
+</body>
+</html>
