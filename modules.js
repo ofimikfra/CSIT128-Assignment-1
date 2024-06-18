@@ -45,7 +45,7 @@ exports.loginUser = function(req, res) {
                 if (result && result.length > 0) {
                     // User is in users table
                     sess.setSession(req, result[0].username); // Create session
-                    res.writeHead(302, {"Location": "/recipes.html"});
+                    res.writeHead(302, {"Location": "/index.html"});
                     res.end();
                 } else {
                     // User is not in users table

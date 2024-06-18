@@ -81,8 +81,7 @@ function validateRegister() {
                     info.textContent = response.message;
                 } else {
                     info.textContent = "";
-                    window.location.href = "/recipes.html";
-                    document.getElementById("greet").textContent = "Hello, " + form["username"] + "!";
+                    window.location.href = "/index.html";
                 }
             } else {
                 console.error("Error:", xhr.status);
@@ -121,8 +120,7 @@ function validateLogin() {
                     info.textContent = response.message;
                 } else {
                     info.textContent = "";
-                    window.location.href = "/recipes.html";
-                    document.getElementById("greet").textContent = "Welcome back, " + form["loguser"] + "!";
+                    window.location.href = "/index.html";
                 }
             } else {
                 throw err;
