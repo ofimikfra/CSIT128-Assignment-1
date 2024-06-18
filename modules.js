@@ -26,7 +26,6 @@ exports.serve = function(res, path, contentType, responseCode = 200) {
     });
 }
 
-// Function to handle user login
 exports.loginUser = function(req, res) { 
     var form = new formidable.IncomingForm();
     form.parse(req, function(err, fields) {
@@ -39,18 +38,21 @@ exports.loginUser = function(req, res) {
             if (err) throw err;
 
             // Check if user is in users table
-            con.query("SELECT * FROM users WHERE username = ? AND password = ?", [loguser, logpassword], function(err, result) {
+            con.query("SELECT * FROM users WHERE username =? AND password =?", [loguser, logpassword], function(err, result) {
                 if (err) throw err;
 
                 if (result && result.length > 0) {
                     // User is in users table
                     sess.setSession(req, result[0].username); // Create session
-                    res.writeHead(302, {"Location": "/recipes.html"});
+                    res.writeHead(302, {
+                        "Location": "/recipes.html",
+                        "Set-Cookie": `sessionID=${req.sessionID}; HttpOnly; Secure`
+                    });
                     res.end();
                 } else {
                     // User is not in users table
                     res.writeHead(200, { "Content-Type": "application/json" });
-                    res.end(JSON.stringify({ success: false, message: "ⓘ Username/email or password is incorrect." }));
+                    res.end(JSON.stringify({ success: false, message: "Username/email or password is incorrect." }));
                 }
                 con.end(); // Close the connection
             });
@@ -58,7 +60,6 @@ exports.loginUser = function(req, res) {
     });
 }
 
-// Function to handle user registration
 exports.registerUser = function(req, res) {
     var form = new formidable.IncomingForm();
     
@@ -78,7 +79,7 @@ exports.registerUser = function(req, res) {
                 if (result.length > 0) {
                     // User already exists
                     res.writeHead(200, { "Content-Type": "application/json" });
-                    res.end(JSON.stringify({ success: false, message: "ⓘ Username is already taken." }));
+                    res.end(JSON.stringify({ success: false, message: "Username is already taken." }));
                 } else {
                     con.query("SELECT * FROM users WHERE email = ?", [email], function(err, result) {
                         if (err) throw err;
@@ -86,16 +87,18 @@ exports.registerUser = function(req, res) {
                         if (result.length > 0) {
                             // User already exists
                             res.writeHead(200, { "Content-Type": "application/json" });
-                            res.end(JSON.stringify({ success: false, message: "ⓘ Email is already being used." }));
+                            res.end(JSON.stringify({ success: false, message: "Email is already being used." }));
                         } else {
                             // Insert new user into users table
                             con.query("INSERT INTO users (fname, lname, username, email, password) VALUES (?, ?, ?, ?, ?)", [fname, lname, username, email, password], function(err, result) {
-                                if (err) throw err;
-                                console.log("User " + username + " successfully registered.")
-                                res.writeHead(302, {"Location": "/recipes.html"});
-                                sess.setSession(req, username); // Create session
-                                res.end();
-                                con.end(); // Close the connection
+                            if (err) throw err;
+                            console.log("User " + username + " signed up.");
+                        
+                            // Send a JSON response with a success message
+                            res.writeHead(200, { 'Content-Type': 'application/json' });
+                            res.end(JSON.stringify({ success: true, message: "Successfully signed up! Please log in." }));
+                        
+                            con.end(); // Close the connection
                             });
                         }
                     });

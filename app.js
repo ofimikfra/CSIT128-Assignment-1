@@ -38,7 +38,8 @@ http.createServer(function(req, res) {
         if (s && s.userName) {
             mod.serve(res, "./recipes.html", "text/html");
         } else {
-            mod.serve(res, "./login.html", "text/html");
+            res.writeHead(302, { "Location": "/login.html" }); // Redirect to login if not logged in
+            res.end();
         }
     
     // Handle recipe search route
@@ -48,7 +49,7 @@ http.createServer(function(req, res) {
 
     // Handle recipe upload route
     } else if (pathname === "/api/upload" && req.method === "POST") {
-        recipesModule.uploadRecipe(req, res); // Implement uploadRecipe function
+        mod.uploadRecipe(req, res); // Implement uploadRecipe function
 
     // Serve static files
     } else if (pathname === "/search.html" || pathname === "/login.html" || pathname === "/style.css" || pathname === "/loginscript.js" || pathname === "/redirect.html") {

@@ -3,13 +3,11 @@ document.addEventListener("DOMContentLoaded", function() {
     const confirm = document.getElementById("confirm");
     const match = document.getElementById("match");
 
-
     function checkPasswordMatch() {
-        if (password.value == "" || confirm.value == "") {
+        if (password.value === "" || confirm.value === "") {
             match.textContent = "";
             confirm.style.border = "none";
-        }
-        else if (password.value == confirm.value) {
+        } else if (password.value === confirm.value) {
             confirm.style.border = "none";
             match.textContent = "ⓘ Passwords match.";
             match.style.color = "lime";
@@ -27,111 +25,103 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function validateRegister() {
-    // form elements
     let form = document.forms["register"];
     let signupFields = ["fname", "lname", "username", "email", "password", "confirm"];
     let psw = form["password"].value;
     let conf = form["confirm"].value;
     let info = document.getElementById("regInfo");
-    let matchInfo = document.getElementById("match");
 
-    //check if empty
+    // Check if empty fields
     if (checkEmpty(form, signupFields)) {
-        document.getElementById("err").textContent = "ⓘ Please fill out the empty fields."
+        info.textContent = "ⓘ Please fill out all required fields.";
         return false;
     } else {
-        document.getElementById("err").textContent = ""
+        info.textContent = "";
     }
 
-    // check password reqs
-    let upper = false;
-    let num = false;
-    let special = false;
-
-    for (let i = 0; i < psw.length; i++) {
-        if (psw[i] === psw[i].toUpperCase() && /[A-Z]/.test(psw[i])) { upper = true; }
-        else if (/^\d$/.test(psw[i])) { num = true; }
-        else if (/[!@#$]/.test(psw[i]) == true) { special = true; }
-    }
-
-    if ((upper && num && special) == false) { 
-        form["password"].style.border = "2px solid red";
-        info.textContent = "ⓘ Password must contain a capital letter, a digit, and a special character.";
-        info.style.color = "red";
+    // Validate password requirements
+    if (!validatePassword(psw)) {
+        info.textContent = "ⓘ Password must contain at least one uppercase letter, one digit, and one special character (!@#$).";
         return false;
     } else {
-        info.style.color = "lightgrey";
-        form["password"].style.border = "none";
+        info.textContent = "";
     }
 
-    // check if passwords match
+    // Check if passwords match
     if (conf.trim() !== psw.trim()) {
+        info.textContent = "ⓘ Passwords do not match.";
         return false;
-    } 
+    } else {
+        info.textContent = "";
+    }
 
+    // Prepare and send data to server
     let xhr = new XMLHttpRequest();
     xhr.open("POST", "/authregister", true);
     xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-            if (xhr.status === 200) {
-                // Response received
-                let response = JSON.parse(xhr.responseText);
-                if (!response.success) {
-                    info.textContent = response.message;
-                } else {
-                    info.textContent = "";
-                    window.location.href = "/index.html";
-                }
+    xhr.setRequestHeader("Cookie", `sessionID=${getCookie("sessionID")}`); // Send session ID in request headers
+
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            let response = JSON.parse(xhr.responseText);
+            if (!response.success) {
+                info.textContent = response.message;
             } else {
-                console.error("Error:", xhr.status);
+                info.textContent = "";
+                alert("Successfully signed up! Return to hompage and click 'Upload Recipes' to upload recipes.")
+                location.replace("/recipes.html");
             }
+        } else {
+            console.error("Error:", xhr.status);
         }
     };
-    
-    // Send form data to server
+
     let formData = new FormData(form);
     xhr.send(JSON.stringify(Object.fromEntries(formData)));
-    return false; // Prevent default form submission
 }
 
-
 function validateLogin() {
-    // form elements
     let form = document.forms["login"];
     let loginFields = ["loguser", "logpassword"];
     let info = document.getElementById("loginInfo");
 
-    // check if empty
+    // Check if empty fields
     if (checkEmpty(form, loginFields)) {
-        info.textContent = "ⓘ Please fill out the empty fields.";
+        info.textContent = "Please fill out all required fields.";
         return false;
+    } else {
+        info.textContent = "";
     }
 
+    // Prepare and send data to server
     let xhr = new XMLHttpRequest();
     xhr.open("POST", "/authlogin", true);
     xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onreadystatechange = function(err) {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-            if (xhr.status === 200) {
-                // Response received
-                let response = JSON.parse(xhr.responseText);
-                if (!response.success) {
-                    info.textContent = response.message;
-                } else {
-                    info.textContent = "";
-                    window.location.href = "/index.html";
-                }
+    xhr.setRequestHeader("Cookie", `sessionID=${getCookie("sessionID")}`); // Send session ID in request headers
+
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            let response = JSON.parse(xhr.responseText);
+            if (!response.success) {
+                info.textContent = response.message;
             } else {
-                throw err;
+                info.textContent = "";
+                alert("Successfully logged in! Return to hompage and click 'Upload Recipes' to upload recipes.")
+                location.replace("/recipes.html");
             }
+        } else {
+            console.error("Error:", xhr.status);
         }
     };
-    
-    // Send form data to server
+
     let formData = new FormData(form);
     xhr.send(JSON.stringify(Object.fromEntries(formData)));
-    return false; // Prevent default form submission
+}
+
+function getCookie(name) {
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+    if (parts.length == 2) return parts.pop().split(";").shift();
 }
 
 function checkEmpty(form, fields) {
@@ -145,5 +135,24 @@ function checkEmpty(form, fields) {
             form[fields[i]].style.border = "none";
         }
     }
-    if (isEmpty) {return true;}
+    return isEmpty;
+}
+
+function validatePassword(password) {
+    // Password must contain at least one uppercase letter, one digit, and one special character (!@#$)
+    let upper = false;
+    let num = false;
+    let special = false;
+
+    for (let i = 0; i < password.length; i++) {
+        if (password[i] === password[i].toUpperCase() && /[A-Z]/.test(password[i])) {
+            upper = true;
+        } else if (/[0-9]/.test(password[i])) {
+            num = true;
+        } else if (/[!@#$]/.test(password[i])) {
+            special = true;
+        }
+    }
+
+    return upper && num && special;
 }
