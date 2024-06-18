@@ -1,24 +1,38 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Cooking Papa | Your Recipes</title>
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <script src="scripts.js"></script>
-    <body>
-        <!-- list of recipes -->
-
-        <div class="nav">
-
-            <div class="header">cooking papa</div>
-            
-            <div class="links">
-                <a href="index.html">Home</a>
-                <a href="search.html">Search</a>
-                <a href="login.html">Upload Recipe</a>
-            </div>
-
+<head>
+    <title>Your Recipes | Cooking Papa</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<script src="uploadscript.js"></script>
+<body>
+    <!-- Navigation bar -->
+    <div class="nav">
+        <div class="header">cooking papa</div>
+        <div class="links">
+            <a href="index.html">Home</a>
+            <a href="search.html">Search</a>
+            <a href="login.html">Upload Recipe</a>
         </div>
+    </div>
 
-    </body>
+    <!-- Section for displaying recipes -->
+    <div class="recipes-container">
+        <h1>Your Recipes</h1>
+        <div id="recipes-list"></div>
+    </div>
+
+    <!-- Section for uploading recipes -->
+    <div class="upload-container">
+        <h1>Upload Your Recipe</h1>
+        <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+            <input type="text" name="name" placeholder="Recipe Name" required><br><br>
+            <textarea name="ingredients" placeholder="Ingredients" required></textarea><br><br>
+            <textarea name="instructions" placeholder="Instructions" required></textarea><br><br>
+            <input type="file" name="recipeImage" required><br><br>
+            <button type="submit">Upload Recipe</button>
+        </form>
+        <div id="message"></div>
+    </div>
+</body>
 </html>

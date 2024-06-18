@@ -1,24 +1,19 @@
-// server.js
-
 const http = require("http");
-const fs = require("fs");
 const url = require("url");
+const fs = require("fs");
 const formidable = require("formidable");
 const session = require("./session");
 const mod = require("./modules");
-
 const port = 8080;
 
 // Helper function to parse cookies
 function parseCookies(request) {
     const list = {};
     const rc = request.headers.cookie;
-
     rc && rc.split(';').forEach(function(cookie) {
         const parts = cookie.split('=');
         list[parts.shift().trim()] = decodeURIComponent(parts.join('='));
     });
-
     return list;
 }
 
@@ -32,9 +27,11 @@ http.createServer(function(req, res) {
     // Handle login route
     if (pathname === "/authlogin" && req.method === "POST") {
         mod.loginUser(req, res);
+    
     // Handle register route
     } else if (pathname === "/authregister" && req.method === "POST") {
         mod.registerUser(req, res);
+    
     // Handle recipes route
     } else if (pathname === "/recipes.html") {
         let s = session.getSession(req);
@@ -43,10 +40,25 @@ http.createServer(function(req, res) {
         } else {
             mod.serve(res, "./login.html", "text/html");
         }
+    
+    // Handle recipe search route
+    } else if (pathname === "/api/search" && req.method === "GET") {
+        const searchTerm = parsedUrl.query.q;
+        mod.searchRecipe(req, res, searchTerm);
+
+    // Handle recipe upload route
+    } else if (pathname === "/api/upload" && req.method === "POST") {
+        recipesModule.uploadRecipe(req, res); // Implement uploadRecipe function
+
     // Serve static files
     } else if (pathname === "/search.html" || pathname === "/login.html" || pathname === "/style.css" || pathname === "/loginscript.js" || pathname === "/redirect.html") {
         mod.serve(res, `.${pathname}`, getContentType(pathname));
-    // Default to home route
+
+    // Serve individual recipe details
+    } else if (pathname.startsWith('/recipe/') && req.method === 'GET') {
+        mod.getRecipe(req, res); // Adjust based on how getRecipe is implemented
+
+    // Default route
     } else {
         mod.serve(res, "./index.html", "text/html");
     }
