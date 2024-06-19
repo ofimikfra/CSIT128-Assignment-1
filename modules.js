@@ -109,33 +109,35 @@ exports.registerUser = function(req, res) {
     });
 }
 
-exports.getRecipes = function(req, res) {
-    const user = exports.getCurrentUser(req);
-    const username = user.userName; // Retrieve username from user object
-    const sql = `SELECT * FROM recipes WHERE creator =?`;
+exports.getRecipes = function(res, s, cb) {
+    var username = s.userName; // Retrieve username from user object
+    var sql = `SELECT * FROM recipes WHERE creator = ?`;
   
     var con = exports.connectDB();
+
     con.connect(function(err) {
       if (err) throw err;
   
-      con.query(sql, [username], function(err, rows) {
-        con.end(); // Close the connection
-        if (err) throw err;
-  
-        // Create a JSON object from the SQL query result
-        const recipes = rows.map((row) => ({
-          id: row.id,
-          name: row.name,
-          ingredients: row.ingredients,
-          instructions: row.instructions,
-          imageUrl: row.imageUrl,
-        }));
-  
-        // Send the recipes JSON object to the client-side
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(recipes));
-      });
+        con.query(sql, [username], function(err, result) {
+            if (err) throw err;
+            console.log(result);
+            cb(res, result);
+        });
+
     });
+}
+
+exports.showRecipes = function(res, user) {
+    var recipesHtml = "";
+    for (var i = 0; i < user.length; i++) {
+      var name = user[i].name;
+      var ingreds = user[i].ingredients;
+      var instr = user[i].instructions;
+      var imgurl = `/uploads/${user[i].image}`;
+      recipesHtml += "<div class='recipe-card'><strong>Title:</strong> " + name + "\n<strong>Ingredients:</strong>" + ingreds + "\n<strong>Instructions:</strong>\n" + instr + "\n<strong>Image:</strong> \n <img src='" + imgurl + "'> </div>";
+    }
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.end(recipesHtml);
   }
 
 exports.searchRecipe = function(req, res, searchTerm) {

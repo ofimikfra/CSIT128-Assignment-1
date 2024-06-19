@@ -36,33 +36,19 @@ http.createServer(function(req, res) {
     } else if (pathname === "/recipes.html") {
         let s = session.getSession(req);
         if (s && s.userName) {
-            mod.serve(res, "./recipes.html", "text/html");
+            mod.getRecipes(res, s, mod.showRecipes);
         } else {
             res.writeHead(302, { "Location": "/login.html" }); // Redirect to login if not logged in
             res.end();
         }
-    
-    // Handle recipe search route
-    } else if (pathname === "/api/search" && req.method === "GET") {
-        const searchTerm = parsedUrl.query.q;
-        mod.searchRecipe(req, res, searchTerm);
 
     // Handle recipe upload route
     } else if (pathname === "/upload" && req.method === "POST") {
         mod.uploadRecipe(req, res); // Implement uploadRecipe function
 
     // Serve static files
-    } else if (pathname === "/search.html" || pathname === "/login.html" || pathname === "/style.css" || pathname === "/loginscript.js" || pathname === "/redirect.html") {
+    } else if (pathname === "/search.html" || pathname === "/login.html" || pathname === "/style.css" || pathname === "/loginscript.js" || pathname === "/uploadscript.js" || pathname === "/searchscript.js") {
         mod.serve(res, `.${pathname}`, getContentType(pathname));
-
-    // Serve individual recipe details
-    } else if (pathname.startsWith('/recipe/') && req.method === 'GET') {
-        mod.getRecipe(req, res); // Adjust based on how getRecipe is implemented
-    } 
-    
-    else if (req.url === '/api/search' && req.method === 'GET') {
-        const searchTerm = req.url.split('?')[1].split('=')[1];
-        recipeSearch.searchRecipes(req, res, searchTerm);
     }
     
     else {

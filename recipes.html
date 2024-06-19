@@ -4,7 +4,6 @@
     <title>Your Recipes | Cooking Papa</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<script src="uploadscript.js"></script>
 <body>
     <!-- Navigation bar -->
     <div class="nav">
@@ -17,15 +16,7 @@
     </div>
 
     <!-- Section for displaying recipes -->
-    <div class="recipes-container">
-        <h1>Your Recipes</h1>
-        <div id="recipe-list">
-          <select id="recipe-select">
-            <option value="">Select a recipe</option>
-          </select>
-          <div id="recipe-display"></div>
-        </div>
-      </div>
+    <div class="recipeDisplay"></div>
 
     <!-- Section for uploading recipes -->
     <div class="upload-container">
@@ -39,5 +30,7 @@
         </form>
         <div id="message"></div>
     </div>
+
+    <script src="uploadscript.js"></script>
 </body>
 </html>

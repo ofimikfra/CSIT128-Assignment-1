@@ -1,29 +1,32 @@
-// Fetch the recipes JSON object from the server-side
-fetch('/recipes')
-  .then(response => response.json())
-  .then(recipes => {
-    // Populate the dropdown menu with recipe options
-    const recipeSelect = document.getElementById("recipe-select");
-    recipes.forEach((recipe) => {
-      const option = document.createElement("option");
-      option.value = recipe.id;
-      option.text = recipe.name;
-      recipeSelect.appendChild(option);
-    });
+function displayRecipes(recipesHtml) {
+  const recipeDisplay = document.getElementById("recipeDisplay");
+  recipeDisplay.innerHTML = ""; // Clear the element
+  recipeDisplay.innerHTML = recipesHtml; // Insert the new HTML
+}
 
-    // Add an event listener to the dropdown menu
-    recipeSelect.addEventListener("change", (e) => {
-      const selectedRecipeId = e.target.value;
-      const selectedRecipe = recipes.find((recipe) => recipe.id === parseInt(selectedRecipeId));
-      if (selectedRecipe) {
-        const recipeDisplay = document.getElementById("recipe-display");
-        recipeDisplay.innerHTML = `
-          <h2>${selectedRecipe.name}</h2>
-          <p>Ingredients: ${selectedRecipe.ingredients}</p>
-          <p>Instructions: ${selectedRecipe.instructions}</p>
-          <img src="uploads/${selectedRecipe.imageUrl}" alt="${selectedRecipe.name}">
-        `;
-      }
-    });
-  })
-  .catch(error => console.error('Error:', error));
+// Create a new XMLHttpRequest object
+const xhr = new XMLHttpRequest();
+
+// Set the responseType to "json"
+xhr.responseType = "json";
+
+// Open a connection to the server
+xhr.open("GET", "/recipes");
+
+// Send the request
+xhr.send();
+
+// Define a callback function to handle the response
+xhr.onload = function() {
+  if (xhr.status === 200) {
+      // Call the displayRecipes function with the recipesHtml property of the response object
+      displayRecipes(xhr.response.recipesHtml);
+  } else {
+      console.error("Error:", xhr.statusText);
+  }
+};
+
+// Define a callback function to handle errors
+xhr.onerror = function() {
+  console.error("Error:", xhr.statusText);
+};
