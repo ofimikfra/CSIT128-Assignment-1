@@ -48,7 +48,7 @@ http.createServer(function(req, res) {
         mod.searchRecipe(req, res, searchTerm);
 
     // Handle recipe upload route
-    } else if (pathname === "/api/upload" && req.method === "POST") {
+    } else if (pathname === "/upload" && req.method === "POST") {
         mod.uploadRecipe(req, res); // Implement uploadRecipe function
 
     // Serve static files

@@ -44,6 +44,7 @@ exports.loginUser = function(req, res) {
                 if (result && result.length > 0) {
                     // User is in users table
                     sess.setSession(req, result[0].username); // Create session
+                    req.session = sess.getSession(req); // Set req.session
                     res.writeHead(302, {
                         "Location": "/recipes.html",
                         "Set-Cookie": `sessionID=${req.sessionID}; HttpOnly; Secure`
@@ -133,8 +134,6 @@ exports.getRecipes = function(req, res) {
     });
 }
 
-
-// Function to search for recipes
 exports.searchRecipe = function(req, res, searchTerm) {
     const con = exports.connectDB();
     const sql = `SELECT * FROM recipes WHERE name LIKE ? OR ingredients LIKE ?`;
@@ -164,44 +163,40 @@ exports.searchRecipe = function(req, res, searchTerm) {
 
 exports.uploadRecipe = function(req, res) {
     const form = new formidable.IncomingForm();
-    form.uploadDir = path.join(__dirname, '/uploads');
-    form.keepExtensions = true;
   
     form.parse(req, (err, fields, files) => {
-      if (err) {
-        res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ success: false, message: 'Failed to upload recipe' }));
-        return;
-      }
+      if (err) throw err;
   
       const { name, ingredients, instructions } = fields;
-      const recipeImage = files.recipeImage;
+      req.session = sess.getSession(req); 
+      const username = req.session.userName; 
   
-      // Insert into MySQL database
-      const con = connectDB();
-      const sql = 'INSERT INTO recipes (name, ingredients, instructions, image_url) VALUES (?, ?, ?, ?)';
-      const values = [name, ingredients, instructions, `/uploads/${recipeImage.name}`];
+      // Move the uploaded image to the uploads directory
+      const img = files.recipeImage[0]; 
+      var oldpath = img.filepath;
+      var newpath = __dirname + "/uploads/" + img.originalFilename;
+      fs.rename(oldpath, newpath, function (err) {
+        if (err) throw err;
   
-      con.connect(function(err) {
-        if (err) {
-          console.error('Error connecting to MySQL:', err);
-          res.writeHead(500, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ success: false, message: 'Failed to upload recipe' }));
-          return;
-        }
+        // Insert into MySQL database
+        var con = exports.connectDB();
+        const sql = 'INSERT INTO recipes (name, ingredients, instructions, image, creator) VALUES (?,?,?,?,?)';
+        const values = [name, ingredients, instructions, img.originalFilename, username];
+  
+        con.connect(function(err) {
+          if (err) throw err;
+        });
   
         con.query(sql, values, (err) => {
-            con.end(); // Close the connection
-            if (err) {
-              console.error('Error inserting recipe into MySQL:', err);
-              res.writeHead(500, { 'Content-Type': 'application/json' });
-              res.end(JSON.stringify({ success: false, message: 'Failed to upload recipe' }));
-            } else {
-              console.log('Recipe inserted into MySQL');
-              res.writeHead(302, { 'Location': '/recipes.html' }); // Redirect to /recipes.html
-              res.end();
-            }
+          if (err) throw err; 
+          console.log('New recipe added.');
+          res.writeHead(302, { 'Location': '/recipes.html' }); 
+          res.end();
+          con.end(); 
         });
+
       });
+
+
     });
-}
+  }
