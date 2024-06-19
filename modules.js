@@ -162,47 +162,46 @@ exports.searchRecipe = function(req, res, searchTerm) {
     });
 }
 
-// Function to handle recipe upload
 exports.uploadRecipe = function(req, res) {
     const form = new formidable.IncomingForm();
     form.uploadDir = path.join(__dirname, '/uploads');
     form.keepExtensions = true;
-
-    form.parse(req, (err, fields) => {
+  
+    form.parse(req, (err, fields, files) => {
+      if (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, message: 'Failed to upload recipe' }));
+        return;
+      }
+  
+      const { name, ingredients, instructions } = fields;
+      const recipeImage = files.recipeImage;
+  
+      // Insert into MySQL database
+      const con = connectDB();
+      const sql = 'INSERT INTO recipes (name, ingredients, instructions, image_url) VALUES (?, ?, ?, ?)';
+      const values = [name, ingredients, instructions, `/uploads/${recipeImage.name}`];
+  
+      con.connect(function(err) {
         if (err) {
-            res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ success: false, message: 'Failed to upload recipe' }));
-            return;
+          console.error('Error connecting to MySQL:', err);
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, message: 'Failed to upload recipe' }));
+          return;
         }
-
-        const { name, ingredients, instructions } = fields;
-        // Assuming imageUrl is not handled here and handled elsewhere
-
-        // Insert into MySQL database
-        const con = connectDB();
-        const sql = 'INSERT INTO recipes (name, ingredients, instructions) VALUES (?, ?, ?)';
-        const values = [name, ingredients, instructions];
-
-        con.connect(function(err) {
+  
+        con.query(sql, values, (err) => {
+            con.end(); // Close the connection
             if (err) {
-                console.error('Error connecting to MySQL:', err);
-                res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ success: false, message: 'Failed to upload recipe' }));
-                return;
+              console.error('Error inserting recipe into MySQL:', err);
+              res.writeHead(500, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ success: false, message: 'Failed to upload recipe' }));
+            } else {
+              console.log('Recipe inserted into MySQL');
+              res.writeHead(302, { 'Location': '/recipes.html' }); // Redirect to /recipes.html
+              res.end();
             }
-
-            con.query(sql, values, (err) => {
-                con.end(); // Close the connection
-                if (err) {
-                    console.error('Error inserting recipe into MySQL:', err);
-                    res.writeHead(500, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ success: false, message: 'Failed to upload recipe' }));
-                } else {
-                    console.log('Recipe inserted into MySQL');
-                    res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ success: true, message: 'Recipe uploaded successfully' }));
-                }
-            });
         });
+      });
     });
 }

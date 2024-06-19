@@ -68,8 +68,7 @@ function validateRegister() {
                 info.textContent = response.message;
             } else {
                 info.textContent = "";
-                alert("Successfully signed up! Return to hompage and click 'Upload Recipes' to upload recipes.")
-                location.replace("/recipes.html");
+                alert("Successfully signed up! You can now login.")
             }
         } else {
             console.error("Error:", xhr.status);
@@ -78,6 +77,7 @@ function validateRegister() {
 
     let formData = new FormData(form);
     xhr.send(JSON.stringify(Object.fromEntries(formData)));
+    return false;
 }
 
 function validateLogin() {
@@ -106,7 +106,7 @@ function validateLogin() {
                 info.textContent = response.message;
             } else {
                 info.textContent = "";
-                alert("Successfully logged in! Return to hompage and click 'Upload Recipes' to upload recipes.")
+                alert("Successfully logged in!");
                 location.replace("/recipes.html");
             }
         } else {
