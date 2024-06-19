@@ -21,8 +21,10 @@ exports.deleteSession = function(req) {
     if (sessionId && sessions[sessionId]) {
         delete sessions[sessionId];
         console.log(`Session ${sessionId} logged out.`);
+        return true;
     } else {
         console.log(`Session with ID ${sessionId} not found.`);
+        return false;
     }
 };
 

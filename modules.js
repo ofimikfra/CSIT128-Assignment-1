@@ -4,7 +4,6 @@ const formidable = require("formidable");
 const sess = require("./session");
 const path = require("path");
 
-// Function to establish a connection with the database
 exports.connectDB = function() {
     return mysql.createConnection({
         host: "localhost",
@@ -110,7 +109,7 @@ exports.registerUser = function(req, res) {
 }
 
 exports.getRecipes = function(res, s, cb) {
-    var username = s.userName; // Retrieve username from user object
+    var username = s.userName; 
     var sql = `SELECT * FROM recipes WHERE creator = ?`;
   
     var con = exports.connectDB();
@@ -137,7 +136,7 @@ exports.showRecipes = function(res, user) {
       recipesHtml += "<div class='recipe-card'><strong>Title:</strong> " + name + "\n<strong>Ingredients:</strong>" + ingreds + "\n<strong>Instructions:</strong>\n" + instr + "\n<strong>Image:</strong> \n <img src='" + imgurl + "'> </div>";
     }
     res.writeHead(200, { 'Content-Type': 'text/html' });
-    res.end(recipesHtml);
+    res.end(recipesHtml); // this thing doesnt work, for me it just returns the recipesHTML thing as a string without the rest of the page??
   }
 
 exports.searchRecipe = function(req, res, searchTerm) {
