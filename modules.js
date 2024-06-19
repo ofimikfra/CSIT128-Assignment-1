@@ -110,56 +110,49 @@ exports.registerUser = function(req, res) {
 }
 
 exports.getRecipes = function(req, res) {
-    const username = sess.getSession(req).userName; // Retrieve username from session
-    const sql = `SELECT * FROM recipes WHERE creator = ?`;
+    const user = exports.getCurrentUser(req);
+    const username = user.userName; // Retrieve username from user object
+    const sql = `SELECT * FROM recipes WHERE creator =?`;
+  
+    var con = exports.connectDB();
+    con.connect(function(err) {
+      if (err) throw err;
+  
+      con.query(sql, [username], function(err, rows) {
+        con.end(); // Close the connection
+        if (err) throw err;
+  
+        // Create a JSON object from the SQL query result
+        const recipes = rows.map((row) => ({
+          id: row.id,
+          name: row.name,
+          ingredients: row.ingredients,
+          instructions: row.instructions,
+          imageUrl: row.imageUrl,
+        }));
+  
+        // Send the recipes JSON object to the client-side
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(recipes));
+      });
+    });
+  }
+
+exports.searchRecipe = function(req, res, searchTerm) {
+    const sql = `SELECT * FROM recipes WHERE name LIKE ?`;
+    var term = `%${searchTerm}%`;
 
     var con = exports.connectDB();
     con.connect(function(err) {
-        if (err) {
-            res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: "Database connection error." }));
-            return;
-        }
-
-        con.query(sql, [username], function(err, rows) {
-            con.end(); // Close the connection
-            if (err) {
-                res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: err.message }));
-            } else {
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ recipes: rows }));
-            }
-        });
+      if (err) throw err;
     });
-}
 
-exports.searchRecipe = function(req, res, searchTerm) {
-    const con = exports.connectDB();
-    const sql = `SELECT * FROM recipes WHERE name LIKE ? OR ingredients LIKE ?`;
-    const queryTerm = `%${searchTerm}%`;
-
-    con.connect(function(err) {
-        if (err) {
-            console.error('Error connecting to MySQL:', err);
-            res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'Database connection error.' }));
-            return;
-        }
-
-        con.query(sql, [queryTerm, queryTerm], function(err, rows) {
-            con.end(); // Close the connection
-            if (err) {
-                console.error('Error searching recipes:', err);
-                res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: err.message }));
-            } else {
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ recipes: rows }));
-            }
-        });
+    con.query(sql, [term], function(err, rows) {
+      if (err) throw err;
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ recipes: rows }));
     });
-}
+  }
 
 exports.uploadRecipe = function(req, res) {
     const form = new formidable.IncomingForm();

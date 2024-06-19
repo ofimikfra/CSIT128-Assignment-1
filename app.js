@@ -58,9 +58,14 @@ http.createServer(function(req, res) {
     // Serve individual recipe details
     } else if (pathname.startsWith('/recipe/') && req.method === 'GET') {
         mod.getRecipe(req, res); // Adjust based on how getRecipe is implemented
-
-    // Default route
-    } else {
+    } 
+    
+    else if (req.url === '/api/search' && req.method === 'GET') {
+        const searchTerm = req.url.split('?')[1].split('=')[1];
+        recipeSearch.searchRecipes(req, res, searchTerm);
+    }
+    
+    else {
         mod.serve(res, "./index.html", "text/html");
     }
 }).listen(port, () => {

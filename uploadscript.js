@@ -1,34 +1,29 @@
-const uploadForm = document.getElementById('uploadForm');
-const recipesList = document.getElementById('recipes-list');
-const messageDiv = document.getElementById('message');
-
-uploadForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const formData = new FormData(uploadForm);
-  fetch('/upload', {
-    method: 'POST',
-    body: formData
-  })
+// Fetch the recipes JSON object from the server-side
+fetch('/recipes')
   .then(response => response.json())
-  .then((data) => {
-    if (data.success) {
-      messageDiv.textContent = 'Recipe uploaded successfully!';
-      // Display the uploaded recipe in the recipes list
-      const recipeHTML = `
-        <div>
-          <h2>${data.recipe.name}</h2>
-          <p>Ingredients: ${data.recipe.ingredients}</p>
-          <p>Instructions: ${data.recipe.instructions}</p>
-          <img src="${data.recipe.imageUrl}" alt="Recipe Image">
-        </div>
-      `;
-      recipesList.innerHTML += recipeHTML;
-    } else {
-      messageDiv.textContent = 'Failed to upload recipe';
-    }
+  .then(recipes => {
+    // Populate the dropdown menu with recipe options
+    const recipeSelect = document.getElementById("recipe-select");
+    recipes.forEach((recipe) => {
+      const option = document.createElement("option");
+      option.value = recipe.id;
+      option.text = recipe.name;
+      recipeSelect.appendChild(option);
+    });
+
+    // Add an event listener to the dropdown menu
+    recipeSelect.addEventListener("change", (e) => {
+      const selectedRecipeId = e.target.value;
+      const selectedRecipe = recipes.find((recipe) => recipe.id === parseInt(selectedRecipeId));
+      if (selectedRecipe) {
+        const recipeDisplay = document.getElementById("recipe-display");
+        recipeDisplay.innerHTML = `
+          <h2>${selectedRecipe.name}</h2>
+          <p>Ingredients: ${selectedRecipe.ingredients}</p>
+          <p>Instructions: ${selectedRecipe.instructions}</p>
+          <img src="uploads/${selectedRecipe.imageUrl}" alt="${selectedRecipe.name}">
+        `;
+      }
+    });
   })
-  .catch((error) => {
-    console.error('Error uploading recipe:', error);
-    messageDiv.textContent = 'Failed to upload recipe';
-  });
-});
+  .catch(error => console.error('Error:', error));
