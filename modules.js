@@ -2,7 +2,8 @@ const fs = require("fs");
 const mysql = require("mysql");
 const formidable = require("formidable");
 const sess = require("./session");
-const path = require("path");
+const url = require('url');
+const querystring = require('querystring');
 
 // creates mysql connection
 exports.connectDB = function() {
@@ -114,38 +115,33 @@ exports.registerUser = function(req, res) {
     });
 }
 
-// returns recipes of user from recipes table based on current session (this works fine)
-exports.getRecipes = function(res, s, cb) {
-    var username = s.userName; 
-    var sql = `SELECT * FROM recipes WHERE creator = ?`;
-  
+// returns recipes of user from recipes table based on current session
+exports.getRecipes = function(req, s) {
+    var username = s.userName;
+    var sql = `SELECT * FROM recipes WHERE creator =?`;
+
     var con = exports.connectDB();
 
     con.connect(function(err) {
-      if (err) throw err;
-  
+        if (err) throw err;
+
         con.query(sql, [username], function(err, result) {
             if (err) throw err;
             console.log(result);
-            cb(res, result); // this calls showRecipes() with the user's recipes as the argument
-        });
 
+            // Convert the result to a JSON string
+            var recipes = JSON.stringify(result);
+
+            // Write the JSON data to a file
+            fs.writeFile("recipeList.json", recipes, function(err) {
+                if (err) throw err;
+                console.log("Recipe file updated successfully.");
+            });
+
+            con.end();
+        });
     });
 }
-
-// displays recipes on page (it constructs the string but it doesnt display on the page properly)
-exports.showRecipes = function(res, user) {
-    var recipesHtml = "";
-    for (var i = 0; i < user.length; i++) {
-      var name = user[i].name;
-      var ingreds = user[i].ingredients;
-      var instr = user[i].instructions;
-      var imgurl = `/uploads/${user[i].image}`;
-      recipesHtml += "<div class='recipe-card'><strong>Title:</strong> " + name + "\n<strong>Ingredients:</strong>" + ingreds + "\n<strong>Instructions:</strong>\n" + instr + "\n<strong>Image:</strong> \n <img src='" + imgurl + "'> </div>";
-    }
-    res.writeHead(200, { 'Content-Type': 'text/html' });
-    res.end(recipesHtml); // this thing doesnt work, for me it just returns the recipesHTML thing as a string without the rest of the page??
-  }
 
 // displays recipes based on search term (this also doesnt work)
 exports.searchRecipe = function(req, res, searchTerm) {
@@ -162,7 +158,7 @@ exports.searchRecipe = function(req, res, searchTerm) {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ recipes: rows }));
     });
-  }
+}
 
 // inserts recipe into recipes table (this works fine)
 exports.uploadRecipe = function(req, res) {
@@ -203,4 +199,29 @@ exports.uploadRecipe = function(req, res) {
 
 
     });
-  }
+}
+
+exports.deleteRecipe = function(req, res) {
+    const form = new formidable.IncomingForm();
+    form.parse(req, (err, fields, files) => {
+      if (err) throw err;
+  
+      const recipeId = fields.recipeId;
+      var con = exports.connectDB();
+  
+      con.connect(function(err) {
+        if (err) throw err;
+  
+        con.query("DELETE FROM recipes WHERE id =?", [recipeId], function(err, result) {
+            if (err) throw err;
+            console.log(result.affectedRows);
+            console.log("Recipe deleted successfully.");
+  
+            var s = sess.getSession(req);
+            exports.getRecipes(req, s);
+            res.writeHead(302, { "Location": "/recipes.html" }); // redirect back to recipes page
+            res.end();
+        });
+      });
+    });
+}

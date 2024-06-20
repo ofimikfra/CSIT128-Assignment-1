@@ -1,6 +1,7 @@
 const http = require("http");
 const url = require("url");
 const session = require("./session");
+const fs = require("fs");
 const mod = require("./modules");
 const port = 8080;
 
@@ -37,10 +38,7 @@ http.createServer(function(req, res) {
         let s = session.getSession(req); 
 
         if (s && s.userName) { // if there is a session (user is logged in)
-            mod.serve(res, "./recipes.html", "text/html");
-            /* change to this: mod.getRecipes(res, s, mod.showRecipes); 
-                i just changed it to serve the recipes page for now bc i was testing the logout function so u can change it
-                to test the showing recipes thing */
+            mod.serve(res, "./recipes.html", "text/html"); // recipes dont show
         } 
         
         else { // if there is no session (user is not logged in)
@@ -66,8 +64,23 @@ http.createServer(function(req, res) {
         }
     }
 
+    else if (pathname === "/deleteRecipe.html") {
+        let s = session.getSession(req);
+        if (s && s.userName) {
+            mod.getRecipes(req, s);
+            mod.serve(res, "./deleteRecipe.html", "text/html");
+        } else {
+            res.writeHead(302, { "Location": "/login.html" }); // redirect to login page
+            res.end();
+        }
+    }
+
+    else if (pathname === "/delete") {
+        mod.deleteRecipe(req, res);
+    }
+
     // serve all other files
-    else if (pathname === "/search.html" || pathname === "/login.html" || pathname === "/style.css" || pathname === "/loginscript.js" || pathname === "/uploadscript.js" || pathname === "/searchscript.js") {
+    else if (pathname === "/search.html" || pathname === "/login.html" || pathname === "/style.css" || pathname === "/loginscript.js" || pathname === "/uploadscript.js" || pathname === "/searchscript.js" || pathname === "/recipeList.json") {
         mod.serve(res, `.${pathname}`, getContentType(pathname));
     }
     
@@ -90,6 +103,8 @@ function getContentType(pathname) {
             return 'text/css';
         case 'js':
             return 'application/javascript';
+        case 'json' :
+            return 'application/json';
         default:
             return 'text/plain';
     }

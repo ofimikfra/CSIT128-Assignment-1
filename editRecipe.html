@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Recipe | Cooking Papa</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation bar -->
+    <div class="nav">
+        <div class="header">cooking papa</div>
+        <div class="links">
+            <a href="index.html">Home</a>
+            <a href="search.html">Search</a>
+            <a href="recipes.html">Your Recipes</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+
+    <!-- Edit recipe form -->
+    <div class="edit-container">
+        <h1>Edit Recipe</h1>
+        <form id="editForm" action="/edit" method="POST">
+            <select name="recipe" id="recipe" required>
+                <!-- Populate this dropdown with user's recipes from JSON data -->
+            </select>
+            <button type="submit">Edit Recipe</button>
+        </form>
+        <div id="message"></div>
+
+        <!-- Edit recipe form will be displayed here -->
+        <div id="edit-form-container"></div>
+    </div>
+
+    <script src="editscript.js"></script>
+</body>
+</html>
