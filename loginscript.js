@@ -31,7 +31,7 @@ function validateRegister() {
     let conf = form["confirm"].value;
     let info = document.getElementById("regInfo");
 
-    // Check if empty fields
+    // check if empty fields
     if (checkEmpty(form, signupFields)) {
         info.textContent = "ⓘ Please fill out all required fields.";
         return false;
@@ -39,7 +39,7 @@ function validateRegister() {
         info.textContent = "";
     }
 
-    // Validate password requirements
+    // validate password requirements
     if (!validatePassword(psw)) {
         info.textContent = "ⓘ Password must contain at least one uppercase letter, one digit, and one special character (!@#$).";
         return false;
@@ -47,7 +47,7 @@ function validateRegister() {
         info.textContent = "";
     }
 
-    // Check if passwords match
+    // check if passwords match
     if (conf.trim() !== psw.trim()) {
         info.textContent = "ⓘ Passwords do not match.";
         return false;
@@ -55,17 +55,17 @@ function validateRegister() {
         info.textContent = "";
     }
 
-    // Prepare and send data to server
     let xhr = new XMLHttpRequest();
     xhr.open("POST", "/authregister", true);
     xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.setRequestHeader("Cookie", `sessionID=${getCookie("sessionID")}`); // Send session ID in request headers
+    xhr.setRequestHeader("Cookie", `sessionID=${getCookie("sessionID")}`); 
 
     xhr.onload = function() {
         if (xhr.status === 200) {
             let response = JSON.parse(xhr.responseText);
             if (!response.success) {
                 info.textContent = response.message;
+                // add location.replace("/recipes.html"); here and test to see if it still redirects to just json string
             } else {
                 info.textContent = "";
                 alert("Successfully signed up! You can now login.")
@@ -85,7 +85,7 @@ function validateLogin() {
     let loginFields = ["loguser", "logpassword"];
     let info = document.getElementById("loginInfo");
 
-    // Check if empty fields
+    // check if empty fields
     if (checkEmpty(form, loginFields)) {
         info.textContent = "Please fill out all required fields.";
         return false;
@@ -93,17 +93,17 @@ function validateLogin() {
         info.textContent = "";
     }
 
-    // Prepare and send data to server
     let xhr = new XMLHttpRequest();
     xhr.open("POST", "/authlogin", true);
     xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.setRequestHeader("Cookie", `sessionID=${getCookie("sessionID")}`); // Send session ID in request headers
+    xhr.setRequestHeader("Cookie", `sessionID=${getCookie("sessionID")}`); 
 
     xhr.onload = function() {
         if (xhr.status === 200) {
             let response = JSON.parse(xhr.responseText);
             if (!response.success) {
                 info.textContent = response.message;
+                // add location.replace("/recipes.html"); here and test to see if it still redirects to just json string
             } else {
                 info.textContent = "";
                 alert("Successfully logged in!");
@@ -118,12 +118,14 @@ function validateLogin() {
     xhr.send(JSON.stringify(Object.fromEntries(formData)));
 }
 
+// return cookies for session stuff
 function getCookie(name) {
     var value = "; " + document.cookie;
     var parts = value.split("; " + name + "=");
     if (parts.length == 2) return parts.pop().split(";").shift();
 }
 
+// check if any fields are empty
 function checkEmpty(form, fields) {
     let isEmpty = false;
 
@@ -138,8 +140,8 @@ function checkEmpty(form, fields) {
     return isEmpty;
 }
 
+// check if password requirements are satisfied
 function validatePassword(password) {
-    // Password must contain at least one uppercase letter, one digit, and one special character (!@#$)
     let upper = false;
     let num = false;
     let special = false;
@@ -149,7 +151,7 @@ function validatePassword(password) {
             upper = true;
         } else if (/[0-9]/.test(password[i])) {
             num = true;
-        } else if (/[!@#$]/.test(password[i])) {
+        } else if (/[!@#$&*%?]/.test(password[i])) {
             special = true;
         }
     }

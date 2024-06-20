@@ -1,7 +1,10 @@
+/* i tried doing the thing where you dynamically update the html like in yesterday's lab but it didnt work for me  
+  this is the client side js for recipes.html */
+
 function displayRecipes(recipesHtml) {
   const recipeDisplay = document.getElementById("recipeDisplay");
-  recipeDisplay.innerHTML = ""; // Clear the element
-  recipeDisplay.innerHTML = recipesHtml; // Insert the new HTML
+  recipeDisplay.innerHTML = ""; 
+  recipeDisplay.innerHTML = recipesHtml; 
 }
 
 // Create a new XMLHttpRequest object

@@ -1,3 +1,6 @@
+/* client side js for search.html but recipes arent showing up, i guess if we figure out how to show recipes on this or on recipes.html
+  we can use the same code for the other one */
+
 document.addEventListener("DOMContentLoaded", function() {
     const searchInput = document.getElementById("search-input");
     const searchButton = document.getElementById("submit");

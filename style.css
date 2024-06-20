@@ -152,6 +152,8 @@ form h2 {
     border: 2px solid white;
 }
 
+/* this part is for the styling of the recipes when theyre shown on the page */
+
 .recipe-card {
     background-color: #f7f7f7;
     padding: 20px;
