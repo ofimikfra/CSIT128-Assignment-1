@@ -103,7 +103,7 @@ function validateLogin() {
             let response = JSON.parse(xhr.responseText);
             if (!response.success) {
                 info.textContent = response.message;
-                // add location.replace("/recipes.html"); here and test to see if it still redirects to just json string
+                location.replace("/recipes.html");
             } else {
                 info.textContent = "";
                 alert("Successfully logged in!");
@@ -158,3 +158,11 @@ function validatePassword(password) {
 
     return upper && num && special;
 }
+
+const urlParams = new URLSearchParams(window.location.search);
+var error = urlParams.get('error');
+
+    if (error) {
+        error = error.replace(/_/g, ' '); 
+        alert(error);
+    }

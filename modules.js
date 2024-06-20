@@ -53,8 +53,10 @@ exports.loginUser = function(req, res) {
                 
                 else {
                     // user is not in users table
-                    res.writeHead(200, { "Content-Type": "application/json" });
-                    res.end(JSON.stringify({ success: false, message: "Username/email or password is incorrect." }));
+                    res.writeHead(302, {
+                        "Location": "/login.html?error=Invalid_login_credentials._Please_try_again." // redirects back to login page with error
+                    });
+                    res.end();
                 }
                 con.end(); 
             });
@@ -81,23 +83,27 @@ exports.registerUser = function(req, res) {
 
                 if (result.length > 0) {
                     // user already exists
-                    res.writeHead(200, { "Content-Type": "application/json" });
-                    res.end(JSON.stringify({ success: false, message: "Username is already taken." }));
+                    res.writeHead(302, {
+                        "Location": "/register.html?error=Username_is_already_taken._Please_try_again." // redirects back to register page with error
+                    });
+                    res.end();
                 } else {
                     con.query("SELECT * FROM users WHERE email = ?", [email], function(err, result) {
                         if (err) throw err;
         
                         if (result.length > 0) {
                             // user already exists
-                            res.writeHead(200, { "Content-Type": "application/json" });
-                            res.end(JSON.stringify({ success: false, message: "Email is already being used." })); 
+                            res.writeHead(302, {
+                                "Location": "/register.html?error=Email_is_already_in_use._Please_try_again." // redirects back to register page with error
+                            });
+                            res.end();
                         } else {
                             // insert new user into users table
                             con.query("INSERT INTO users (fname, lname, username, email, password) VALUES (?, ?, ?, ?, ?)", [fname, lname, username, email, password], function(err, result) {
                                 if (err) throw err;
                                 console.log("User " + username + " signed up.");
                                 res.writeHead(200, { 'Content-Type': 'application/json' });
-                                res.end(JSON.stringify({ success: true, message: "Successfully signed up! Please log in." }));
+                                res.end(JSON.stringify({ success: true, message: "Successfully signed up! You can now log in." }));
                                 con.end();
                             });
                         }
