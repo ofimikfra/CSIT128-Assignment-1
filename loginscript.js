@@ -151,7 +151,7 @@ function validatePassword(password) {
             upper = true;
         } else if (/[0-9]/.test(password[i])) {
             num = true;
-        } else if (/[!@#$&*%?]/.test(password[i])) {
+        } else if (/[!@#$]/.test(password[i])) {
             special = true;
         }
     }

@@ -37,7 +37,7 @@ http.createServer(function(req, res) {
         let s = session.getSession(req); 
 
         if (s && s.userName) { // if there is a session (user is logged in)
-            mod.serve(res, "/recipes.html", "text/html");
+            mod.serve(res, "./recipes.html", "text/html");
             /* change to this: mod.getRecipes(res, s, mod.showRecipes); 
                 i just changed it to serve the recipes page for now bc i was testing the logout function so u can change it
                 to test the showing recipes thing */
