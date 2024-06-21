@@ -1,5 +1,20 @@
 const recipeDisplay = document.querySelector('.recipeDisplay');
 
+fetch('./categoryList.json')
+.then(response => response.json())
+.then(data => {
+    categoryData = data;
+    const categoryDropdown = document.getElementById('recipe-category');
+    data.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category.name; 
+        option.text = category.name;
+        categoryDropdown.add(option);
+    });
+})
+.catch(error => console.error('Error:', error));
+
+
 // Get recipes from JSON file using Ajax
 const xhr = new XMLHttpRequest();
 xhr.open('GET', 'recipeList.json', true);
@@ -15,14 +30,19 @@ xhr.onload = function() {
       recipeName.textContent = recipe.name;
       recipeCard.appendChild(recipeName);
 
+      const recipeCategory = document.createElement('p');
+      recipeCategory.id = 'recipeCategory';
+      recipeCategory.textContent = recipe.category;
+      recipeCard.appendChild(recipeCategory);
+
       const recipeIngredients = document.createElement('p');
       recipeIngredients.id = 'recipeIngredients';
-      recipeIngredients.textContent = recipe.ingredients;
+      recipeIngredients.textContent = "Ingredients: " + recipe.ingredients;
       recipeCard.appendChild(recipeIngredients);
 
       const recipeInstructions = document.createElement('p');
       recipeInstructions.id = 'recipeInstructions';
-      recipeInstructions.textContent = recipe.instructions;
+      recipeInstructions.textContent = "Instructions: " + recipe.instructions;
       recipeCard.appendChild(recipeInstructions);
 
       const recipeImg = document.createElement('img');

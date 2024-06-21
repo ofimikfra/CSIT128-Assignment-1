@@ -29,6 +29,7 @@
 
     <div class="recipe-card">
         <h3 id="recipe-name"></h3>
+        <h3 id="recipe-category"></h3>
         <p id="recipe-ingredients"></p>
         <p id="recipe-instructions"></p>
         <img id="recipe-img">
@@ -70,6 +71,7 @@
             const recipe = recipeData.find(recipe => recipe.id === parseInt(id));
             if (recipe) {
                 document.getElementById("recipe-name").textContent = recipe.name;
+                document.getElementById("recipe-category").textContent = recipe.category;
                 document.getElementById("recipe-ingredients").textContent = recipe.ingredients;
                 document.getElementById("recipe-instructions").textContent = recipe.instructions;
                 document.getElementById("recipe-img").src = `/uploads/${recipe.image}`;

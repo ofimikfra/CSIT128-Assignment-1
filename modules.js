@@ -166,14 +166,14 @@ exports.searchRecipe = function(req, res, searchTerm) {
     });
 }
 
-// inserts recipe into recipes table (this works fine)
+// inserts recipe into recipes table 
 exports.uploadRecipe = function(req, res) {
     const form = new formidable.IncomingForm();
   
     form.parse(req, (err, fields, files) => {
       if (err) throw err;
   
-      const { name, ingredients, instructions } = fields;
+      const { name, ingredients, instructions, category } = fields;
       req.session = sess.getSession(req); 
       const username = req.session.userName; 
   
@@ -186,8 +186,8 @@ exports.uploadRecipe = function(req, res) {
   
         // Insert into MySQL database
         var con = exports.connectDB();
-        const sql = 'INSERT INTO recipes (name, ingredients, instructions, image, creator) VALUES (?,?,?,?,?)';
-        const values = [name, ingredients, instructions, img.originalFilename, username];
+        const sql = 'INSERT INTO recipes (name, ingredients, instructions, image, creator, category) VALUES (?,?,?,?,?,?)';
+        const values = [name, ingredients, instructions, img.originalFilename, username, category];
   
         con.connect(function(err) {
           if (err) throw err;
@@ -235,16 +235,16 @@ exports.deleteRecipe = function(req, res) {
 exports.editRecipe = function(req, res) {
     const form = new formidable.IncomingForm();
   
-    form.parse(req, (err, fields, files) => {
+    form.parse(req, (err, fields) => {
         if (err) throw err;
         
-        const { name, ingredients, instructions, recipe } = fields;
+        const { name, ingredients, instructions, recipe, category } = fields;
         const recipeId = parseInt(recipe);
             
         // Insert into MySQL database
         var con = exports.connectDB();
-        const sql = 'UPDATE recipes SET name = ?, ingredients = ?, instructions = ? WHERE id = ?';
-        const values = [name, ingredients, instructions, recipeId];
+        const sql = 'UPDATE recipes SET name = ?, ingredients = ?, instructions = ?, category = ? WHERE id = ?';
+        const values = [name, ingredients, instructions, category, recipeId];
             
         con.connect(function(err) {
           if (err) throw err;
@@ -252,7 +252,6 @@ exports.editRecipe = function(req, res) {
         
         con.query(sql, values, (err) => {
           if (err) throw err; 
-          alert("Recipe has been edited successfully.");
           res.writeHead(302, { 'Location': '/recipes.html' }); 
           res.end();
           con.end(); 

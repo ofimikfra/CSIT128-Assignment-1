@@ -5,7 +5,6 @@ const mod = require("./modules");
 const port = 8080;
 const fs = require("fs");
 
-// honestly idk what this is for i just know it makes the session stuff work
 function parseCookies(request) {
     const list = {};
     const rc = request.headers.cookie;

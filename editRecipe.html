@@ -26,6 +26,9 @@
             <input type="text" name="name" id="recipe-name" placeholder="Recipe Name"><br><br>
             <textarea name="ingredients" id="recipe-ingredients" placeholder="Ingredients"></textarea><br><br>
             <textarea name="instructions" id="recipe-instructions" placeholder="Instructions"></textarea><br><br>
+            <select name="category" id="recipe-category" required>
+                <option value="" disabled selected>Select a category...</option>
+            </select><br><br>
             <button type="submit" class="button">Update Recipe</button>
         </form>
         <div id="message"></div>
@@ -36,7 +39,8 @@
 
     <script>
         let recipeData = [];
-    
+        let categoryData = [];
+
         fetch('./recipeList.json')
         .then(response => response.json())
         .then(data => {
@@ -49,6 +53,20 @@
                 dropdown.add(option);
               });
             })
+        .catch(error => console.error('Error:', error));
+
+        fetch('./categoryList.json')
+        .then(response => response.json())
+        .then(data => {
+            categoryData = data;
+            const categoryDropdown = document.getElementById('recipe-category');
+            data.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.name; 
+                option.text = category.name;
+                categoryDropdown.add(option);
+            });
+        })
         .catch(error => console.error('Error:', error));
 
         function previewRecipe(id) {

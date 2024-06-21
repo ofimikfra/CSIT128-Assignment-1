@@ -16,14 +16,19 @@ xhr.onload = function() {
       recipeName.textContent = recipe.name;
       recipeCard.appendChild(recipeName);
 
+      const recipeCategory = document.createElement('p');
+      recipeCategory.id = 'recipeCategory';
+      recipeCategory.textContent = recipe.category;
+      recipeCard.appendChild(recipeCategory);
+
       const recipeIngredients = document.createElement('p');
       recipeIngredients.id = 'recipeIngredients';
-      recipeIngredients.textContent = recipe.ingredients;
+      recipeIngredients.textContent = "Ingredients: " + recipe.ingredients;
       recipeCard.appendChild(recipeIngredients);
 
       const recipeInstructions = document.createElement('p');
       recipeInstructions.id = 'recipeInstructions';
-      recipeInstructions.textContent = recipe.instructions;
+      recipeInstructions.textContent = "Instructions: " + recipe.instructions;
       recipeCard.appendChild(recipeInstructions);
 
       const recipeImg = document.createElement('img');
