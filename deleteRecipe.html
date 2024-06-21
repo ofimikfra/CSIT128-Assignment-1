@@ -17,23 +17,17 @@
     </div>
 
     <!-- Delete recipe form -->
-    <div class="delete-container">
+    <div class="delete-container, search">
         <form id="delete-form" action="/delete">
-            <h1>Delete Recipe</h1>
+            <h1>Delete a Recipe</h1>
             <select name="recipe-dropdown" id="recipe" onchange="previewRecipe(this.value)" required>
                 <option name="select recipe" disabled selected>Select a recipe...</option>
             </select>
-            <button id="delete-button">Delete Recipe</button>
+            <button id="delete-button" class="button">Delete Recipe</button>
         </form>
     </div>
 
-    <div class="recipe-card">
-        <h3 id="recipe-name"></h3>
-        <h3 id="recipe-category"></h3>
-        <p id="recipe-ingredients"></p>
-        <p id="recipe-instructions"></p>
-        <img id="recipe-img">
-    </div>
+    <div class="recipes"></div>
 
     <script>
         let recipeData = [];
@@ -70,11 +64,45 @@
         function previewRecipe(id) {
             const recipe = recipeData.find(recipe => recipe.id === parseInt(id));
             if (recipe) {
-                document.getElementById("recipe-name").textContent = recipe.name;
-                document.getElementById("recipe-category").textContent = recipe.category;
-                document.getElementById("recipe-ingredients").textContent = recipe.ingredients;
-                document.getElementById("recipe-instructions").textContent = recipe.instructions;
-                document.getElementById("recipe-img").src = `/uploads/${recipe.image}`;
+                const display = document.querySelector('.recipes');
+                display.innerHTML = "";
+                const recipeDisplay = document.createElement('div');
+                recipeDisplay.className = 'recipe-display';
+
+                const recipeCard = document.createElement('div');
+                recipeCard.className = 'recipe-card';
+                recipeDisplay.appendChild(recipeCard);
+
+                const recipeName = document.createElement('h3');
+                recipeName.id = 'recipe-name';
+                recipeName.textContent = recipe.name;
+                recipeCard.appendChild(recipeName);
+
+                const recipeCategory = document.createElement('p');
+                recipeCategory.id = 'recipe-category';
+                recipeCategory.textContent = "Category: " +recipe.category;
+                recipeCard.appendChild(recipeCategory);
+
+                const recipeIngredients = document.createElement('p');
+                recipeIngredients.id = 'recipe-ingredients';
+                recipeIngredients.innerHTML = "Ingredients: <br>" + recipe.ingredients;
+                recipeCard.appendChild(recipeIngredients);
+
+                const recipeInstructions = document.createElement('p');
+                recipeInstructions.id = 'recipe-instructions';
+                recipeInstructions.innerHTML = "Instructions: <br>" + recipe.instructions;
+                recipeCard.appendChild(recipeInstructions);
+
+                const recipeCardImg = document.createElement('div');
+                recipeCardImg.className = 'recipe-card-img';
+                recipeDisplay.appendChild(recipeCardImg);
+
+                const recipeImg = document.createElement('img');
+                recipeImg.id = 'recipe-img';
+                recipeImg.src = `/uploads/${recipe.image}`;
+                recipeCardImg.appendChild(recipeImg);
+
+                display.appendChild(recipeDisplay);
             }
         }
     </script>

@@ -47,7 +47,7 @@ fetch('./categoryList.json')
           categoryData.forEach(category => {
             catHTML += `<p>${category.name}</p>`;
           });
-          catDisplayDiv.innerHTML = `<h1>Your Categories</h1>${catHTML}`;
+          catDisplayDiv.innerHTML = catHTML;
         } else {
           alert(data.message);
         }
@@ -57,7 +57,7 @@ fetch('./categoryList.json')
 
     // Display categories
     const catDisplayDiv = document.querySelector('.catDisplay');
-    catDisplayDiv.innerHTML = `<h1>Your Categories</h1>${catHTML}`;
+    catDisplayDiv.innerHTML = catHTML;
 })
 .catch(error => console.error('Error:', error));
 
@@ -87,7 +87,7 @@ function addCategory(newCategoryName) {
                     dropdown.add(option);
                     catHTML += `<p>${newCategoryName}</p>`;
                     const catDisplayDiv = document.querySelector('.catDisplay');
-                    catDisplayDiv.innerHTML = `<h1>Your Categories</h1>${catHTML}`;
+                    catDisplayDiv.innerHTML = catHTML;
                 }
             } else {
                 console.error("Error:", xhr.status);

@@ -18,23 +18,19 @@
 
     <!-- Edit recipe form -->
     <div class="edit-container">
-        <h1>Edit Recipe</h1>
+        <h1>Edit a Recipe</h1>
         <form id="edit-form" action="/edit" method="POST">
             <select name="recipe" id="recipe" onchange="previewRecipe(this.value)" required>
                 <option name="select recipe" disabled selected>Select a recipe...</option>
             </select>
-            <input type="text" name="name" id="recipe-name" placeholder="Recipe Name"><br><br>
-            <textarea name="ingredients" id="recipe-ingredients" placeholder="Ingredients"></textarea><br><br>
-            <textarea name="instructions" id="recipe-instructions" placeholder="Instructions"></textarea><br><br>
+            <input type="text" name="name" id="recipe-name" placeholder="Recipe Name" size="30%"><br>
+            <textarea name="ingredients" id="recipe-ingredients" placeholder="Ingredients" cols="47"></textarea><br>
+            <textarea name="instructions" id="recipe-instructions" placeholder="Instructions" cols="47" rows="5"></textarea><br>
             <select name="category" id="recipe-category" required>
                 <option value="" disabled selected>Select a category...</option>
-            </select><br><br>
+            </select>
             <button type="submit" class="button">Update Recipe</button>
         </form>
-        <div id="message"></div>
-
-        <!-- Edit recipe form will be displayed here -->
-        <div id="edit-form-container"></div>
     </div>
 
     <script>

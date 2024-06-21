@@ -18,25 +18,27 @@
         </div>
     </div>
 
-    <!-- Section for displaying recipes -->
-    <div class="recipeDisplay"></div>
+    <div style="display: flex;">
+        <div class="recipes">
+            <h1 style="margin-left: 30px;">Your Recipes</h1>
+        </div> <!-- Section for displaying recipes -->
 
-    <!-- Section for uploading recipes -->
-    <div class="upload-container">
-        <h1>Upload Your Recipe</h1>
-        <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
-            <input type="text" name="name" placeholder="Recipe Name" required><br><br>
-            <textarea name="ingredients" placeholder="Ingredients" required></textarea><br><br>
-            <textarea name="instructions" placeholder="Instructions" required></textarea><br><br>
-            <input type="file" name="recipeImage" required><br><br>
-            <select name="category" id="recipe-category" required>
-                <option value="" disabled selected>Select a category...</option>
-            </select><br><br>
-            <button type="submit" class="button">Upload Recipe</button>
-        </form>
-        <div id="message"></div>
+        <!-- Section for uploading recipes -->
+        <div class="upload-container">
+            <h1>Upload a Recipe</h1>
+            <p style="font-size: 15px;">Once you upload a recipe, other people will be able to see it.</p>
+            <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+                <input type="text" name="name" placeholder="Recipe Name" size="47%" required><br>
+                <textarea name="ingredients" placeholder="Ingredients" cols="46" required></textarea><br>
+                <textarea name="instructions" placeholder="Instructions" cols="46" rows="5" required></textarea><br>
+                <select name="category" id="recipe-category" required>
+                    <option value="" disabled selected>Select a category...</option>
+                </select>
+                <input type="file" name="recipeImage" id="file" required> <br><br>
+                <button type="submit" class="button">Upload Recipe</button>
+            </form>
+        </div>
     </div>
-
     <script src="uploadscript.js"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-const recipeDisplay = document.querySelector('.recipeDisplay');
+const display = document.querySelector('.recipes');
 
 fetch('./categoryList.json')
 .then(response => response.json())
@@ -22,35 +22,43 @@ xhr.onload = function() {
   if (xhr.status === 200) {
     const recipes = JSON.parse(xhr.responseText);
     recipes.forEach((recipe) => {
+      const recipeDisplay = document.createElement('div');
+      recipeDisplay.className = 'recipe-display';
+
       const recipeCard = document.createElement('div');
       recipeCard.className = 'recipe-card';
+      recipeDisplay.appendChild(recipeCard);
 
       const recipeName = document.createElement('h3');
-      recipeName.id = 'recipeName';
+      recipeName.id = 'recipe-name';
       recipeName.textContent = recipe.name;
       recipeCard.appendChild(recipeName);
 
       const recipeCategory = document.createElement('p');
-      recipeCategory.id = 'recipeCategory';
-      recipeCategory.textContent = recipe.category;
+      recipeCategory.id = 'recipe-category';
+      recipeCategory.textContent = "Category: " +recipe.category;
       recipeCard.appendChild(recipeCategory);
 
       const recipeIngredients = document.createElement('p');
-      recipeIngredients.id = 'recipeIngredients';
-      recipeIngredients.textContent = "Ingredients: " + recipe.ingredients;
+      recipeIngredients.id = 'recipe-ingredients';
+      recipeIngredients.innerHTML = "Ingredients: <br>" + recipe.ingredients;
       recipeCard.appendChild(recipeIngredients);
 
       const recipeInstructions = document.createElement('p');
-      recipeInstructions.id = 'recipeInstructions';
-      recipeInstructions.textContent = "Instructions: " + recipe.instructions;
+      recipeInstructions.id = 'recipe-instructions';
+      recipeInstructions.innerHTML = "Instructions: <br>" + recipe.instructions;
       recipeCard.appendChild(recipeInstructions);
 
-      const recipeImg = document.createElement('img');
-      recipeImg.id = 'recipeImg';
-      recipeImg.src = `/uploads/${recipe.image}`;
-      recipeCard.appendChild(recipeImg);
+      const recipeCardImg = document.createElement('div');
+      recipeCardImg.className = 'recipe-card-img';
+      recipeDisplay.appendChild(recipeCardImg);
 
-      recipeDisplay.appendChild(recipeCard);
+      const recipeImg = document.createElement('img');
+      recipeImg.id = 'recipe-img';
+      recipeImg.src = `/uploads/${recipe.image}`;
+      recipeCardImg.appendChild(recipeImg);
+
+      display.appendChild(recipeDisplay);
     });
   } else {
     console.error(xhr.statusText);

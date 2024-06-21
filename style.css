@@ -21,7 +21,7 @@ body {
 }
 
 .banner {
-    background-image: linear-gradient(rgba(107, 63, 71, 0.5), rgba(107, 63, 71, 0.5)), url(https://i.pinimg.com/originals/ec/17/ee/ec17ee8ace7615022ba4ba96ab0be153.jpg);
+    background-image: linear-gradient(rgba(107, 63, 71, 0.5), rgba(107, 63, 71, 0.5), rgba(107, 63, 71, 0.5) ), url(https://i.pinimg.com/originals/ec/17/ee/ec17ee8ace7615022ba4ba96ab0be153.jpg);
     background-size: cover;
     width: 100%;
     height: 40vh;
@@ -109,13 +109,22 @@ a:hover {
     margin-left: 40px;
 }
 
-form input, textarea {
+form input:not(#file), textarea {
     font-size: 16px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     margin-bottom: 10px;
     padding: 5px;
     line-height: 25px;
     border-radius: 5px;
     border: 0;
+}
+
+select {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    border-radius: 5px;
+    border: 0;
+    margin-right: 20px;
+    padding: 5px;
 }
 
 form a {
@@ -137,8 +146,8 @@ form h2 {
     margin-top: 0;
     font-weight: bold;
     font-size: 15px;
-    padding: 5px;
-    width: 20%;
+    padding: 10px;
+    width: fit-content;
     border-radius: 20px;
     border: 2px solid white;
     color: white;
@@ -152,11 +161,135 @@ form h2 {
     border: 2px solid white;
 }
 
-/* this part is for the styling of the recipes when theyre shown on the page */
+.recipe-display {   
+    padding: 20px;
+    margin: 30px;
+    border: 2px solid white;
+    border-radius: 10px;
+    display: flex;
+}
 
 .recipe-card {
-    padding: 20px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
+    width: 70%; 
+    margin-right: 10px;
+}
+
+.recipe-card-img {
+    flex: 1; 
+}
+
+.recipe-card-img img {
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover;
+}
+
+.recipe-card h3 {
+    font-weight: bold;
+    margin-top: 0;
+}
+
+.recipe-card p {
+    margin-top: 0;
+}
+
+.search {
+    text-align: center;
+    /* use background image like the banner */
+    background-image: linear-gradient(rgba(45, 45, 48, 1), rgba(107, 63, 71, 0.5), rgba(107, 63, 71, 0.5), rgba(45, 45, 48, 1)), url(https://i.pinimg.com/originals/8b/76/24/8b76241de2d51963058431e53b96072a.jpg);
+    background-size: cover;
+    width: 100%;
+    height: 40vh;
+    text-align: center;
+    align-items: center;
+    align-content: center;
+    text-shadow: 0px 0px 30px #2d2d30;
+}
+
+.search h1 {
+    font-size: 100px;
+    margin: 5px;
+}
+
+#search-input {
+    width: 40%;
+    margin-right: 10px;
+}
+
+.upload-container {
+    width: 50%;
+    margin-left: 30px;
+}
+
+.upload-container input, .upload-container textarea {
+    width: auto;
+}
+
+#delete-form #recipe {
+    font-size: 16px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    margin-bottom: 10px;
+    padding: 5px;
+    line-height: 25px;
+    border-radius: 5px;
+    border: 0;
+    width: 30%;
+}
+
+.edit-container {
+    text-align: center;
+    /* use background image like the banner */
+    background-image: linear-gradient(rgba(45, 45, 48, 1), rgba(107, 63, 71, 0.5), rgba(107, 63, 71, 0.5), rgba(45, 45, 48, 1)), url(https://i.pinimg.com/564x/54/6c/df/546cdf792ee35d26914d0f8e386f6d40.jpg);
+    background-size: cover;
+    width: 100%;
+    text-align: center;
+    align-items: center;
+    align-content: center;
+    text-shadow: 0px 0px 30px #2d2d30;
+    height: 70vh;
+}
+
+.edit-container h1 {
+    font-size: 100px;
+    margin: 5px;
+}
+
+.catDisplay {
+    display: flex;
+    justify-content: center; 
+    text-align: center;
+}
+
+.catDisplay p {
+    margin-top: 0;
+    font-weight: bold;
+    font-size: 15px;
+    padding: 10px;
+    border-radius: 20px;
+    border: 2px solid white;
+    color: white;
+    background-color: rgb(85, 44, 51);
+    margin: 5px;
+}
+
+.category-container {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+.uploadcat, .deletecat {
+    width: 30%;
+    margin: 10px;
+    padding-bottom: 20px;
+    border: 2px solid white;
+    border-radius: 20px;
+}
+
+.uploadcat input {
+    margin-right: 10px;
+}
+
+.deletecat select {
+    width: 40%;
 }
