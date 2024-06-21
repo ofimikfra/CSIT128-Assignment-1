@@ -224,7 +224,6 @@ exports.deleteRecipe = function(req, res) {
   
             var s = sess.getSession(req);
             exports.getRecipes(req, s);
-            alert("Recipe has been deleted successfully.");
             res.writeHead(302, { "Location": "/recipes.html" }); // redirect back to recipes page
             res.end();
         });

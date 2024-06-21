@@ -34,7 +34,7 @@ fetch('./categoryList.json')
      .then((response) => response.json())
      .then((data) => {
         if (data.success) {
-            console.log("Categore deleted.")
+            console.log("Category deleted.")
           // Remove the category from the dropdown menu
           const dropdown = document.getElementById('category-dropdown');
           const option = dropdown.querySelector(`option[value="${categoryId}"]`);
@@ -77,7 +77,6 @@ function addCategory(newCategoryName) {
                     alert(response.message);
                     location.replace("/categories.html");
                 } else {
-                    alert("New category added.");
                     const newCategoryId = response.newCategoryId;
                     categoryData.push({ id: newCategoryId, name: newCategoryName });
                     const dropdown = document.getElementById('category-dropdown');

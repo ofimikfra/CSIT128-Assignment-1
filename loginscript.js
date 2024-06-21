@@ -33,6 +33,7 @@ function validateRegister() {
 
     // check if empty fields
     if (checkEmpty(form, signupFields)) {
+        info.color = "red";
         info.textContent = "ⓘ Please fill out all required fields.";
         return false;
     } else {
@@ -41,6 +42,7 @@ function validateRegister() {
 
     // validate password requirements
     if (!validatePassword(psw)) {
+        info.color = "grey";
         info.textContent = "ⓘ Password must contain at least one uppercase letter, one digit, and one special character (!@#$).";
         return false;
     } else {
@@ -86,7 +88,8 @@ function validateLogin() {
 
     // check if empty fields
     if (checkEmpty(form, loginFields)) {
-        info.textContent = "Please fill out all required fields.";
+        info.textContent = "ⓘ Please fill out all required fields.";
+        info.color = "red";
         return false;
     } else {
         info.textContent = "";
