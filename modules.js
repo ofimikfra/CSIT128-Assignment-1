@@ -259,3 +259,71 @@ exports.editRecipe = function(req, res) {
         });
     });
 }
+
+exports.getCategories = function(req, s) {
+    var username = s.userName;
+    var sql = `SELECT * FROM categories WHERE creator =?`;
+
+    var con = exports.connectDB();
+
+    con.connect(function(err) {
+        if (err) throw err;
+
+        con.query(sql, [username], function(err, result) {
+            if (err) throw err;
+            console.log(result);
+
+            var recipes = JSON.stringify(result);
+
+            fs.writeFile("categoryList.json", recipes, function(err) {
+                if (err) throw err;
+                console.log("Category file updated successfully.");
+            });
+
+            con.end();
+        });
+    });
+}
+
+exports.addCategory = function(req, res) {
+    const form = new formidable.IncomingForm();
+  
+    form.parse(req, (err, fields) => {
+      if (err) throw err;
+  
+      const { categoryName } = fields;
+      req.session = sess.getSession(req); 
+      const username = req.session.userName; 
+
+      var con = exports.connectDB();
+      con.connect(function(err) {
+        if (err) throw err;
+      });
+  
+        // Insert into MySQL database
+        
+        var sql = 'SELECT name FROM categories WHERE LOWER(name) = LOWER(?)';
+        con.query(sql, [categoryName], (err, result) => {
+            if (err) throw err; 
+
+            if (result.length > 0) {
+                res.writeHead(302, {
+                    "Location": "/categories.html?error=This_category_already_exists." // redirects back to register page with error
+                });
+                res.end();
+
+            } else {
+                sql = 'INSERT INTO categories (name, creator) VALUES (?,?)';
+                con.query(sql, [categoryName, username], (err, result) => {
+                    if (err) throw err; 
+                    console.log('New category added.');
+                    const newCategoryId = result.insertId; // Get the inserted ID
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ success: true, message: "Category added successfully", newCategoryId: newCategoryId }));
+                    res.end();
+                    con.end(); 
+                });
+            }
+        });
+    });
+}

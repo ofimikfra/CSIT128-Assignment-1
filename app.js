@@ -122,8 +122,27 @@ http.createServer(function(req, res) {
         mod.serve(res, "./search.html", "text/html");
     }
 
+    else if (pathname === "/categories.html") {
+        let s = session.getSession(req);
+        if (s && s.userName) {
+            mod.getCategories(req, s);
+            mod.serve(res, "./categories.html", "text/html");
+        } else {
+            res.writeHead(302, { "Location": "/login.html" }); // redirect to login page
+            res.end();
+        }
+    }
+
+    else if (pathname === "/addcategory") {
+        mod.addCategory(req, res);
+    }
+
+    else if (pathname === "/categoryList.json") {
+        mod.serve(res, "./categoryList.json", "application/json");
+    }
+
     // serve all other files
-    else if (pathname === "/login.html" || pathname === "/style.css" || pathname === "/loginscript.js" || pathname === "/uploadscript.js" || pathname === "/searchscript.js") {
+    else if (pathname === "/login.html" || pathname === "/style.css" || pathname === "/loginscript.js" || pathname === "/uploadscript.js" || pathname === "/searchscript.js" || pathname === "/categoryscript.js" ) {
         mod.serve(res, `.${pathname}`, getContentType(pathname));
     }
     
