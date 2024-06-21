@@ -6,7 +6,7 @@ xhr.open('GET', 'recipeSearch.json', true);
 xhr.onload = function() {
   if (xhr.status === 200) {
     const recipes = JSON.parse(xhr.responseText);
-    console.log(recipes); // Add this line to verify the data
+
     recipes.forEach((recipe) => {
       const recipeCard = document.createElement('div');
       recipeCard.className = 'recipe-card';
@@ -28,7 +28,7 @@ xhr.onload = function() {
 
       const recipeImg = document.createElement('img');
       recipeImg.id = 'recipeImg';
-      recipeImg.src = `./uploads/${recipe.image}`;
+      recipeImg.src = `/uploads/${recipe.image}`;
       recipeCard.appendChild(recipeImg);
 
       recipeDisplay.appendChild(recipeCard);

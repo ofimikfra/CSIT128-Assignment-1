@@ -2,8 +2,6 @@ const fs = require("fs");
 const mysql = require("mysql");
 const formidable = require("formidable");
 const sess = require("./session");
-const url = require('url');
-const querystring = require('querystring');
 
 // creates mysql connection
 exports.connectDB = function() {

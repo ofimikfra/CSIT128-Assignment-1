@@ -3,6 +3,7 @@ const url = require("url");
 const session = require("./session");
 const mod = require("./modules");
 const port = 8080;
+const fs = require("fs");
 
 // honestly idk what this is for i just know it makes the session stuff work
 function parseCookies(request) {
@@ -109,8 +110,20 @@ http.createServer(function(req, res) {
         mod.serve(res, "./recipeSearch.json", "application/json");
     }
 
+    else if (pathname.startsWith("/uploads/")) {
+        const filePath = `.${pathname}`;
+        mod.serve(res, filePath, getContentType(filePath));
+    }
+
+    else if (pathname === "/search.html") {
+        fs.writeFile("recipeSearch.json", "[]", function(err) {
+            if (err) throw err;
+        });
+        mod.serve(res, "./search.html", "text/html");
+    }
+
     // serve all other files
-    else if (pathname === "/search.html" || pathname === "/login.html" || pathname === "/style.css" || pathname === "/loginscript.js" || pathname === "/uploadscript.js" || pathname === "/searchscript.js") {
+    else if (pathname === "/login.html" || pathname === "/style.css" || pathname === "/loginscript.js" || pathname === "/uploadscript.js" || pathname === "/searchscript.js") {
         mod.serve(res, `.${pathname}`, getContentType(pathname));
     }
     
@@ -127,15 +140,20 @@ http.createServer(function(req, res) {
 function getContentType(pathname) {
     const extension = pathname.split('.').pop();
     switch (extension) {
-        case 'html':
-            return 'text/html';
-        case 'css':
-            return 'text/css';
-        case 'js':
-            return 'application/javascript';
-        case 'json' :
-            return 'application/json';
-        default:
-            return 'text/plain';
+      case 'html':
+        return 'text/html';
+      case 'css':
+        return 'text/css';
+      case 'js':
+        return 'application/javascript';
+      case 'json':
+        return 'application/json';
+      case 'png':
+        return 'image/png';
+      case 'jpg':
+      case 'jpeg':
+        return 'image/jpeg';
+      default:
+        return 'text/plain';
     }
-}
+  }

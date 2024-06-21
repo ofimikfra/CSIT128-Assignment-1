@@ -27,7 +27,7 @@ xhr.onload = function() {
 
       const recipeImg = document.createElement('img');
       recipeImg.id = 'recipeImg';
-      recipeImg.src = `./uploads/${recipe.image}`;
+      recipeImg.src = `/uploads/${recipe.image}`;
       recipeCard.appendChild(recipeImg);
 
       recipeDisplay.appendChild(recipeCard);

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Search | Cooking Papa</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, intial-scale=1.0">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <!-- search for recipes -->
+
+        <div class="nav">
+
+            <div class="header">cooking papa</div>
+            
+            <div class="links">
+                <a href="index.html">Home</a>
+                <a href="search.html">Search</a>
+                <a href="recipes.html">Upload Recipe</a>
+            </div>
+        </div>
+        <div class="container">
+            <h1>Recipe Search</h1>
+            <form name="recipe-search" action="/search">
+                <input type="text" id="search-input" name="searchTerm" placeholder="Search for recipes...">
+                <button type="submit" id="submit">Search</button>
+            </form>
+        </div>
+        <h1 id="result"></h1>
+        <div class="recipeDisplay"></div>
+        <script src="searchscript.js"></script>
+    </body>
+</html>
+
