@@ -19,11 +19,14 @@
     <!-- Edit recipe form -->
     <div class="edit-container">
         <h1>Edit Recipe</h1>
-        <form id="editForm" action="/edit" method="POST">
-            <select name="recipe" id="recipe" required>
-                <!-- Populate this dropdown with user's recipes from JSON data -->
+        <form id="edit-form" action="/edit" method="POST">
+            <select name="recipe" id="recipe" onchange="previewRecipe(this.value)" required>
+                <option name="select recipe" disabled selected>Select a recipe...</option>
             </select>
-            <button type="submit">Edit Recipe</button>
+            <input type="text" name="name" id="recipe-name" placeholder="Recipe Name"><br><br>
+            <textarea name="ingredients" id="recipe-ingredients" placeholder="Ingredients"></textarea><br><br>
+            <textarea name="instructions" id="recipe-instructions" placeholder="Instructions"></textarea><br><br>
+            <button type="submit" class="button">Update Recipe</button>
         </form>
         <div id="message"></div>
 
@@ -31,6 +34,31 @@
         <div id="edit-form-container"></div>
     </div>
 
-    <script src="editscript.js"></script>
+    <script>
+        let recipeData = [];
+    
+        fetch('./recipeList.json')
+        .then(response => response.json())
+        .then(data => {
+              recipeData = data;
+              const dropdown = document.getElementById('recipe');
+              data.forEach(recipe => {
+                const option = document.createElement('option');
+                option.value = recipe.id;
+                option.text = recipe.name;
+                dropdown.add(option);
+              });
+            })
+        .catch(error => console.error('Error:', error));
+
+        function previewRecipe(id) {
+            const recipe = recipeData.find(recipe => recipe.id === parseInt(id));
+            if (recipe) {
+                document.getElementById("recipe-name").value = recipe.name;
+                document.getElementById("recipe-ingredients").value = recipe.ingredients;
+                document.getElementById("recipe-instructions").value = recipe.instructions;
+            }
+        }
+    </script>
 </body>
 </html>

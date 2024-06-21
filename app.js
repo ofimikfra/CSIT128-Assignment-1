@@ -76,6 +76,17 @@ http.createServer(function(req, res) {
         }
     }
 
+    else if (pathname === "/editRecipe.html") {
+        let s = session.getSession(req);
+        if (s && s.userName) {
+            mod.getRecipes(req, s);
+            mod.serve(res, "./editRecipe.html", "text/html");
+        } else {
+            res.writeHead(302, { "Location": "/login.html" }); // redirect to login page
+            res.end();
+        }
+    }
+
     else if (pathname === "/delete") {
         mod.deleteRecipe(req, res);
     }
@@ -84,6 +95,10 @@ http.createServer(function(req, res) {
         var search = q.searchTerm;
         mod.searchRecipe(req, res, search);
         mod.serve(res, "./search.html", "text/html");
+    }
+
+    else if (pathname === "/edit") {
+        mod.editRecipe(req, res);
     }
 
     else if (pathname === "/recipeList.json") {

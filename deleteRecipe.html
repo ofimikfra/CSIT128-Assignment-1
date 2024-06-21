@@ -18,55 +18,63 @@
 
     <!-- Delete recipe form -->
     <div class="delete-container">
-        <form id="delete-form" action="/delete" enctype="multipart/form-data">
+        <form id="delete-form" action="/delete">
             <h1>Delete Recipe</h1>
-            <select name="recipe-dropdown" id="recipe" required>
-                <!-- Populate this dropdown with user's recipes from JSON data -->
+            <select name="recipe-dropdown" id="recipe" onchange="previewRecipe(this.value)" required>
+                <option name="select recipe" disabled selected>Select a recipe...</option>
             </select>
             <button id="delete-button">Delete Recipe</button>
         </form>
     </div>
 
+    <div class="recipe-card">
+        <h3 id="recipe-name"></h3>
+        <p id="recipe-ingredients"></p>
+        <p id="recipe-instructions"></p>
+        <img id="recipe-img">
+    </div>
+
     <script>
+        let recipeData = [];
+    
         fetch('./recipeList.json')
-       .then(response => response.json())
-       .then(data => {
-          const dropdown = document.getElementById('recipe');
-          data.forEach(recipe => {
-            const option = document.createElement('option');
-            option.value = recipe.id;
-            option.text = recipe.name;
-            dropdown.add(option);
-          });
-      
-          // Add event listener to select element
-          dropdown.addEventListener("change", (event) => {
-            const selectedRecipeId = event.target.value;
-            const selectedRecipe = data.find(recipe => recipe.id === selectedRecipeId);
-      
-            // Update recipe-card elements
-            document.getElementById("recipeName").textContent = selectedRecipe.name;
-            document.getElementById("recipeIngredients").textContent = selectedRecipe.ingredients;
-            document.getElementById("recipeInstructions").textContent = selectedRecipe.instructions;
-            document.getElementById("recipeImg").src = `./${selectedRecipe.image}`;
-          });
-      
-          // Add event listener to delete button
-          document.getElementById("delete-button").addEventListener("click", (event) => {
-            const recipeId = document.getElementById("recipe").value;
-            fetch("/delete", {
-              method: "POST",
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({ recipeId: recipeId }),
+        .then(response => response.json())
+        .then(data => {
+              recipeData = data;
+              const dropdown = document.getElementById('recipe');
+              data.forEach(recipe => {
+                const option = document.createElement('option');
+                option.value = recipe.id;
+                option.text = recipe.name;
+                dropdown.add(option);
+              });
+          
+              // Add event listener to delete button
+              document.getElementById("delete-button").addEventListener("click", (event) => {
+                const recipeId = document.getElementById("recipe").value;
+                fetch("/delete", {
+                  method: "POST",
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({ recipeId: recipeId }),
+                })
+              .then((response) => response.text())
+              .then((message) => console.log(message))
+              .catch((error) => console.error(error));
+              });
             })
-           .then((response) => response.text())
-           .then((message) => console.log(message))
-           .catch((error) => console.error(error));
-          });
-        })
-       .catch(error => console.error('Error:', error));
+        .catch(error => console.error('Error:', error));
+    
+        function previewRecipe(id) {
+            const recipe = recipeData.find(recipe => recipe.id === parseInt(id));
+            if (recipe) {
+                document.getElementById("recipe-name").textContent = recipe.name;
+                document.getElementById("recipe-ingredients").textContent = recipe.ingredients;
+                document.getElementById("recipe-instructions").textContent = recipe.instructions;
+                document.getElementById("recipe-img").src = `./uploads/${recipe.image}`;
+            }
+        }
     </script>
 </body>
 </html>

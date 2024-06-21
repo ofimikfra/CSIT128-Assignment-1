@@ -223,13 +223,41 @@ exports.deleteRecipe = function(req, res) {
         con.query("DELETE FROM recipes WHERE id =?", [recipeId], function(err, result) {
             if (err) throw err;
             console.log(result.affectedRows);
-            console.log("Recipe deleted successfully.");
   
             var s = sess.getSession(req);
             exports.getRecipes(req, s);
+            alert("Recipe has been deleted successfully.");
             res.writeHead(302, { "Location": "/recipes.html" }); // redirect back to recipes page
             res.end();
         });
       });
+    });
+}
+
+exports.editRecipe = function(req, res) {
+    const form = new formidable.IncomingForm();
+  
+    form.parse(req, (err, fields, files) => {
+        if (err) throw err;
+        
+        const { name, ingredients, instructions, recipe } = fields;
+        const recipeId = parseInt(recipe);
+            
+        // Insert into MySQL database
+        var con = exports.connectDB();
+        const sql = 'UPDATE recipes SET name = ?, ingredients = ?, instructions = ? WHERE id = ?';
+        const values = [name, ingredients, instructions, recipeId];
+            
+        con.connect(function(err) {
+          if (err) throw err;
+        });
+        
+        con.query(sql, values, (err) => {
+          if (err) throw err; 
+          alert("Recipe has been edited successfully.");
+          res.writeHead(302, { 'Location': '/recipes.html' }); 
+          res.end();
+          con.end(); 
+        });
     });
 }
