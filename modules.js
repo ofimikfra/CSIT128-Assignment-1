@@ -142,7 +142,7 @@ exports.getRecipes = function(req, s) {
 // displays recipes based on search term 
 exports.searchRecipe = function(req, res, searchTerm) {
 
-    var sql = "SELECT * FROM recipes WHERE name LIKE '%" + searchTerm + "%' OR ingredients LIKE '%" + searchTerm + "%' OR instructions LIKE '%" + searchTerm + "%'";
+    var sql = "SELECT * FROM recipes WHERE name LIKE '%" + searchTerm + "%' OR ingredients LIKE '%" + searchTerm + "%' OR instructions LIKE '%" + searchTerm + "%' OR category LIKE '%" + searchTerm + "%'";
     var con = exports.connectDB();
   
     con.connect(function(err) {
@@ -164,7 +164,7 @@ exports.searchRecipe = function(req, res, searchTerm) {
             con.end();
         });
     });
-  }
+}
 
 // inserts recipe into recipes table (this works fine)
 exports.uploadRecipe = function(req, res) {
@@ -209,7 +209,7 @@ exports.uploadRecipe = function(req, res) {
 
 exports.deleteRecipe = function(req, res) {
     const form = new formidable.IncomingForm();
-    form.parse(req, (err, fields, files) => {
+    form.parse(req, (err, fields) => {
       if (err) throw err;
   
       const recipeId = fields.recipeId;
@@ -324,6 +324,28 @@ exports.addCategory = function(req, res) {
                     con.end(); 
                 });
             }
+        });
+    });
+}
+
+exports.deleteCategory = function(req, res) {
+    const form = new formidable.IncomingForm();
+    form.parse(req, (err, fields) => {
+        if (err) throw err;
+
+        const categoryId = fields.categoryId;
+        var con = exports.connectDB();
+
+        con.connect(function(err) {
+            if (err) throw err;
+
+            con.query("DELETE FROM categories WHERE id = ?", [categoryId], function(err, result) {
+                if (err) throw err;
+                console.log(result.affectedRows);
+
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: true, message: "Category deleted successfully" }));
+            });
         });
     });
 }

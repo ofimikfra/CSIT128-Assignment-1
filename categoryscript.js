@@ -22,17 +22,37 @@ fetch('./categoryList.json')
         addCategory(newCategoryName);
     });
 
-    document.getElementById("edit-category-button").addEventListener("click", (event) => {
-        event.preventDefault();
-        const categoryId = document.getElementById("category-dropdown").value;
-        const newCategoryName = prompt("Enter new category name:");
-        editCategory(categoryId, newCategoryName);
-    });
-
     document.getElementById("delete-category-button").addEventListener("click", (event) => {
-        event.preventDefault();
         const categoryId = document.getElementById("category-dropdown").value;
-        deleteCategory(categoryId);
+        fetch("/deletecategory", {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ categoryId: categoryId }),
+        })
+     .then((response) => response.json())
+     .then((data) => {
+        if (data.success) {
+            console.log("Categore deleted.")
+          // Remove the category from the dropdown menu
+          const dropdown = document.getElementById('category-dropdown');
+          const option = dropdown.querySelector(`option[value="${categoryId}"]`);
+          dropdown.removeChild(option);
+          // Remove the category from the categoryData array
+          categoryData = categoryData.filter(category => category.id!== categoryId);
+          // Update the category display
+          const catDisplayDiv = document.querySelector('.catDisplay');
+          catHTML = "";
+          categoryData.forEach(category => {
+            catHTML += `<p>${category.name}</p>`;
+          });
+          catDisplayDiv.innerHTML = `<h1>Your Categories</h1>${catHTML}`;
+        } else {
+          alert(data.message);
+        }
+      })
+     .catch((error) => console.error(error));
     });
 
     // Display categories
@@ -78,4 +98,3 @@ function addCategory(newCategoryName) {
         xhr.send(JSON.stringify(formData));
     }
 }
-

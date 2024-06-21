@@ -137,6 +137,10 @@ http.createServer(function(req, res) {
         mod.addCategory(req, res);
     }
 
+    else if (pathname == "/deletecategory") {
+        mod.deleteCategory(req, res);
+    }
+
     else if (pathname === "/categoryList.json") {
         mod.serve(res, "./categoryList.json", "application/json");
     }
