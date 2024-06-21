@@ -27,53 +27,46 @@
         </form>
     </div>
 
-    <div class="recipe-card">
-        <h3 id="recipeName"></h3>
-        <p id="recipeIngredients"></p>
-        <p id="recipeInstructions"></p>
-        <img id="recipeImg">
-    </div>
-
     <script>
         fetch('./recipeList.json')
-        .then(response => response.json())
-        .then(data => {
-            const dropdown = document.getElementById('recipe');
-            data.forEach(recipe => {
-              const option = document.createElement('option');
-              option.value = recipe.id;
-              option.text = recipe.name;
-              dropdown.add(option);
-            });
-
-            // Add event listener to select element
-            dropdown.addEventListener("change", (event) => {
-              const selectedRecipeId = event.target.value;
-              const selectedRecipe = data.find(recipe => recipe.id === selectedRecipeId);
-
-              // Update recipe-card area
-              document.getElementById("recipeName").textContent = selectedRecipe.name;
-              document.getElementById("recipeIngredients").textContent = selectedRecipe.ingredients;
-              document.getElementById("recipeInstructions").textContent = selectedRecipe.instructions;
-              document.getElementById("recipeImg").src = `./${selectedRecipe.image}`;
-            });
-
-            // Add event listener to delete button
-            document.getElementById("delete-button").addEventListener("click", (event) => {
-              const recipeId = document.getElementById("recipe").value;
-              fetch("/delete", {
-                method: "POST",
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ recipeId: recipeId }),
-              })
-            .then((response) => response.text())
-            .then((message) => console.log(message))
-            .catch((error) => console.error(error));
-            });
-          })
-        .catch(error => console.error('Error:', error));
+       .then(response => response.json())
+       .then(data => {
+          const dropdown = document.getElementById('recipe');
+          data.forEach(recipe => {
+            const option = document.createElement('option');
+            option.value = recipe.id;
+            option.text = recipe.name;
+            dropdown.add(option);
+          });
+      
+          // Add event listener to select element
+          dropdown.addEventListener("change", (event) => {
+            const selectedRecipeId = event.target.value;
+            const selectedRecipe = data.find(recipe => recipe.id === selectedRecipeId);
+      
+            // Update recipe-card elements
+            document.getElementById("recipeName").textContent = selectedRecipe.name;
+            document.getElementById("recipeIngredients").textContent = selectedRecipe.ingredients;
+            document.getElementById("recipeInstructions").textContent = selectedRecipe.instructions;
+            document.getElementById("recipeImg").src = `./${selectedRecipe.image}`;
+          });
+      
+          // Add event listener to delete button
+          document.getElementById("delete-button").addEventListener("click", (event) => {
+            const recipeId = document.getElementById("recipe").value;
+            fetch("/delete", {
+              method: "POST",
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ recipeId: recipeId }),
+            })
+           .then((response) => response.text())
+           .then((message) => console.log(message))
+           .catch((error) => console.error(error));
+          });
+        })
+       .catch(error => console.error('Error:', error));
     </script>
 </body>
 </html>

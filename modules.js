@@ -129,10 +129,8 @@ exports.getRecipes = function(req, s) {
             if (err) throw err;
             console.log(result);
 
-            // Convert the result to a JSON string
             var recipes = JSON.stringify(result);
 
-            // Write the JSON data to a file
             fs.writeFile("recipeList.json", recipes, function(err) {
                 if (err) throw err;
                 console.log("Recipe file updated successfully.");
@@ -143,22 +141,32 @@ exports.getRecipes = function(req, s) {
     });
 }
 
-// displays recipes based on search term (this also doesnt work)
+// displays recipes based on search term 
 exports.searchRecipe = function(req, res, searchTerm) {
-    const sql = `SELECT * FROM recipes WHERE name LIKE ?`;
-    var term = `%${searchTerm}%`;
 
+    var sql = "SELECT * FROM recipes WHERE name LIKE '%" + searchTerm + "%' OR ingredients LIKE '%" + searchTerm + "%' OR instructions LIKE '%" + searchTerm + "%'";
     var con = exports.connectDB();
+  
     con.connect(function(err) {
-      if (err) throw err;
+        if (err) throw err;
+        
+        con.query(sql, function(err, result) {
+            if (err) throw err;
+            console.log(sql);
+            console.log(result);
+  
+            var recipes = JSON.stringify(result);
+            
+            fs.writeFile("recipeSearch.json", recipes, function(err) {
+                if (err) throw err;
+                console.log("Recipe search updated successfully.");
+                res.end();
+            });
+          
+            con.end();
+        });
     });
-
-    con.query(sql, [term], function(err, rows) {
-      if (err) throw err;
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ recipes: rows }));
-    });
-}
+  }
 
 // inserts recipe into recipes table (this works fine)
 exports.uploadRecipe = function(req, res) {

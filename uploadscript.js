@@ -1,35 +1,39 @@
-/* i tried doing the thing where you dynamically update the html like in yesterday's lab but it didnt work for me  
-  this is the client side js for recipes.html */
+const recipeDisplay = document.querySelector('.recipeDisplay');
 
-function displayRecipes(recipesHtml) {
-  const recipeDisplay = document.getElementById("recipeDisplay");
-  recipeDisplay.innerHTML = ""; 
-  recipeDisplay.innerHTML = recipesHtml; 
-}
-
-// Create a new XMLHttpRequest object
+// Get recipes from JSON file using Ajax
 const xhr = new XMLHttpRequest();
-
-// Set the responseType to "json"
-xhr.responseType = "json";
-
-// Open a connection to the server
-xhr.open("GET", "/recipes");
-
-// Send the request
-xhr.send();
-
-// Define a callback function to handle the response
+xhr.open('GET', 'recipeList.json', true);
 xhr.onload = function() {
   if (xhr.status === 200) {
-      // Call the displayRecipes function with the recipesHtml property of the response object
-      displayRecipes(xhr.response.recipesHtml);
+    const recipes = JSON.parse(xhr.responseText);
+    recipes.forEach((recipe) => {
+      const recipeCard = document.createElement('div');
+      recipeCard.className = 'recipe-card';
+
+      const recipeName = document.createElement('h3');
+      recipeName.id = 'recipeName';
+      recipeName.textContent = recipe.name;
+      recipeCard.appendChild(recipeName);
+
+      const recipeIngredients = document.createElement('p');
+      recipeIngredients.id = 'recipeIngredients';
+      recipeIngredients.textContent = recipe.ingredients;
+      recipeCard.appendChild(recipeIngredients);
+
+      const recipeInstructions = document.createElement('p');
+      recipeInstructions.id = 'recipeInstructions';
+      recipeInstructions.textContent = recipe.instructions;
+      recipeCard.appendChild(recipeInstructions);
+
+      const recipeImg = document.createElement('img');
+      recipeImg.id = 'recipeImg';
+      recipeImg.src = `./uploads/${recipe.image}`;
+      recipeCard.appendChild(recipeImg);
+
+      recipeDisplay.appendChild(recipeCard);
+    });
   } else {
-      console.error("Error:", xhr.statusText);
+    console.error(xhr.statusText);
   }
 };
-
-// Define a callback function to handle errors
-xhr.onerror = function() {
-  console.error("Error:", xhr.statusText);
-};
+xhr.send();

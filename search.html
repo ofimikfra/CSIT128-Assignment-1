@@ -6,7 +6,6 @@
         <meta name="viewport" content="width=device-width, intial-scale=1.0">
         <link rel="stylesheet" href="style.css">
     </head>
-    <script src="searchscript.js"></script>
     <body>
         <!-- search for recipes -->
 
@@ -21,13 +20,15 @@
             </div>
         </div>
         <div class="container">
-            <h1>Recipie Search</h1>
-            <form>
-                <input type="text" id="search-input" placeholder="Search for recipies...">
-                <input type="submit" id="submit">Search</input>
+            <h1>Recipe Search</h1>
+            <form name="recipe-search" action="/search" enctype="multipart/form-data">
+                <input type="text" id="search-input" name="searchTerm" placeholder="Search for recipes...">
+                <button type="submit" id="submit">Search</button>
             </form>
-            <ul id="results"></ul>
         </div>
+        <h1 id="result"></h1>
+        <div class="recipeDisplay"></div>
+        <script src="searchscript.js"></script>
     </body>
 </html>
 

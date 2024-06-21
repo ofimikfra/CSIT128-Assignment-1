@@ -1,56 +1,40 @@
-/* client side js for search.html but recipes arent showing up, i guess if we figure out how to show recipes on this or on recipes.html
-  we can use the same code for the other one */
+const recipeDisplay = document.querySelector('.recipeDisplay');
 
-document.addEventListener("DOMContentLoaded", function() {
-    const searchInput = document.getElementById("search-input");
-    const searchButton = document.getElementById("submit");
-    const resultsList = document.getElementById("results");
-  
-    searchButton.addEventListener("click", function() {
-      const searchTerm = searchInput.value.trim();
-  
-      // Clear previous search results
-      resultsList.innerHTML = "";
-  
-      // Make sure search term is not empty
-      if (searchTerm !== "") {
-        searchRecipes(searchTerm);
-      } else {
-        // Display message if search term is empty
-        resultsList.innerHTML = "<li>No search term entered.</li>";
-      }
+// Get recipes from JSON file using Ajax
+const xhr = new XMLHttpRequest();
+xhr.open('GET', 'recipeSearch.json', true);
+xhr.onload = function() {
+  if (xhr.status === 200) {
+    const recipes = JSON.parse(xhr.responseText);
+    console.log(recipes); // Add this line to verify the data
+    recipes.forEach((recipe) => {
+      const recipeCard = document.createElement('div');
+      recipeCard.className = 'recipe-card';
+
+      const recipeName = document.createElement('h3');
+      recipeName.id = 'recipeName';
+      recipeName.textContent = recipe.name;
+      recipeCard.appendChild(recipeName);
+
+      const recipeIngredients = document.createElement('p');
+      recipeIngredients.id = 'recipeIngredients';
+      recipeIngredients.textContent = recipe.ingredients;
+      recipeCard.appendChild(recipeIngredients);
+
+      const recipeInstructions = document.createElement('p');
+      recipeInstructions.id = 'recipeInstructions';
+      recipeInstructions.textContent = recipe.instructions;
+      recipeCard.appendChild(recipeInstructions);
+
+      const recipeImg = document.createElement('img');
+      recipeImg.id = 'recipeImg';
+      recipeImg.src = `./uploads/${recipe.image}`;
+      recipeCard.appendChild(recipeImg);
+
+      recipeDisplay.appendChild(recipeCard);
     });
-  
-    function searchRecipes(searchTerm) {
-      // Construct URL for API endpoint
-      const url = `/api/search?q=${encodeURIComponent(searchTerm)}`;
-  
-      // Fetch data from server
-      fetch(url)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`Network response was not ok: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then(data => {
-          displayResults(data.recipes);
-        })
-        .catch(error => {
-          console.error('Error fetching data:', error);
-          resultsList.innerHTML = "<li>Failed to fetch search results.</li>";
-        });
-    }
-  
-    function displayResults(recipes) {
-      if (!recipes || recipes.length === 0) {
-        resultsList.innerHTML = "<li>No recipes found.</li>";
-      } else {
-        recipes.forEach(recipe => {
-          const li = document.createElement("li");
-          li.textContent = recipe.name; // Adjust based on your recipe object structure
-          resultsList.appendChild(li);
-        });
-      }
-    }
-  });
+  } else {
+    console.error(xhr.statusText);
+  }
+};
+xhr.send();

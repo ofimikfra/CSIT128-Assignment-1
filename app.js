@@ -1,7 +1,6 @@
 const http = require("http");
 const url = require("url");
 const session = require("./session");
-const fs = require("fs");
 const mod = require("./modules");
 const port = 8080;
 
@@ -18,9 +17,10 @@ function parseCookies(request) {
 
 // creates server
 http.createServer(function(req, res) {
-    const parsedUrl = url.parse(req.url, true);
-    const pathname = parsedUrl.pathname;
-    const cookies = parseCookies(req);
+    var parsedUrl = url.parse(req.url, true);
+    var pathname = parsedUrl.pathname;
+    var q = parsedUrl.query;
+    var cookies = parseCookies(req);
     req.sessionID = cookies.sessionID;
 
     // when user logs in
@@ -38,7 +38,8 @@ http.createServer(function(req, res) {
         let s = session.getSession(req); 
 
         if (s && s.userName) { // if there is a session (user is logged in)
-            mod.serve(res, "./recipes.html", "text/html"); // recipes dont show
+            mod.getRecipes(req, s);
+            mod.serve(res, "./recipes.html", "text/html"); 
         } 
         
         else { // if there is no session (user is not logged in)
@@ -79,8 +80,22 @@ http.createServer(function(req, res) {
         mod.deleteRecipe(req, res);
     }
 
+    else if (pathname === "/search") {
+        var search = q.searchTerm;
+        mod.searchRecipe(req, res, search);
+        mod.serve(res, "./search.html", "text/html");
+    }
+
+    else if (pathname === "/recipeList.json") {
+        mod.serve(res, "./recipeList.json", "application/json");
+    }
+
+    else if (pathname === "/recipeSearch.json") {
+        mod.serve(res, "./recipeSearch.json", "application/json");
+    }
+
     // serve all other files
-    else if (pathname === "/search.html" || pathname === "/login.html" || pathname === "/style.css" || pathname === "/loginscript.js" || pathname === "/uploadscript.js" || pathname === "/searchscript.js" || pathname === "/recipeList.json") {
+    else if (pathname === "/search.html" || pathname === "/login.html" || pathname === "/style.css" || pathname === "/loginscript.js" || pathname === "/uploadscript.js" || pathname === "/searchscript.js") {
         mod.serve(res, `.${pathname}`, getContentType(pathname));
     }
     
